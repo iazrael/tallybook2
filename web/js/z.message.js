@@ -1,9 +1,9 @@
 /**
- * @namespace Az.message
- * az 框架使用全局的消息通知机制, 需要监听消息的模块调用addListener注册一个回调函数,
+ * @namespace Z.message
+ * zTool 使用全局的消息通知机制, 需要监听消息的模块调用addListener注册一个回调函数,
  * 当有指定消息到达时触发
  */
-Az.$package('Az.message', function(z){
+;Z.$package('Z.message', function(z){
     
     var listenerList = {};
     

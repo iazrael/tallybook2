@@ -1,4 +1,4 @@
-Az.$package('Az.util', function(z){
+Z.$package('Z.util', function(z){
     var browser = new function(){
         this.set = function(name, version){
             this.name = name;

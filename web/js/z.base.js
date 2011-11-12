@@ -5,7 +5,7 @@
         LOADED: 2,
         INITED: 3
     };
-    var LIBRARY_NAME = 'Az';
+    var LIBRARY_NAME = 'Z';
     
     var packageList = {};
     var dependenceQueue = {};

@@ -1,5 +1,5 @@
 
-Az.$package('Az.json', function(z){
+Z.$package('Z.json', function(z){
    	
 /*
     http://www.JSON.org/json2.js

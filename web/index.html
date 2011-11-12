@@ -1,58 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>My Tally Book</title>
-	<style>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>My Tally Book</title>
+    <style>
 button{
-	border: none;
-	background: #369;
-	color: white;
-	font-size: 14px;
-	line-height: 1.5;
-	padding: 3px 10px;
-	cursor: pointer;
+    border: none;
+    background: #369;
+    color: white;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 3px 10px;
+    cursor: pointer;
 }
-	
-	
+    
+    
 .bill-list{
-	font-size: 16px;
-	line-height: 1.5;
+    font-size: 16px;
+    line-height: 1.5;
 }
 .bill-item div{
-	display: inline-block;
+    display: inline-block;
 }
 .bill-item .sign{
-	color: grey;
+    color: grey;
 }
 
 .bill-item .label{
-	color: grey;
-	font-style: italic;
+    color: grey;
+    font-style: italic;
 }
 
-	</style>
+    </style>
 </head>
 <body>
-	<div class="wrap">
-		<div class="toolbar-top">
-			<div class="date-picker"><input type="date"/><button>日期</button><div><button>今日</button><button>今月</button>
-		</div>
-		<ul class="bill-list">
-			<li class="bill-item">
-				<div class="money"><span class="sign">￥</span><span class="amount">30.00</span></div>
-				<div class="date"><span class="sign">@</span><span class="occurred-time">2011/12/25</span></div>
-				<div class="category"><span class="label">Cate:</span><span class="content">饮食</span></div>
-				<div clss="tags"><span class="label">Tags:</span><span class="tags-item">礼品</span><span class="tags-item">请客</span></div>
-				<div class="remark"><span class="label">说明:</span><div class="content">请xx吃饭</div></div>
-			</li>
-			
-		</ul>
-		<div class="toolbar-bottom">
-			<button class="statistics">统计</button>
-		</div>
-	</div>
-	
+    <div class="wrap">
+        <div class="toolbar-top">
+            <div class="date-picker"><input type="date"/><button>日期</button><div><button>今日</button><button>今月</button>
+        </div>
+        <ul class="bill-list">
+            <li class="bill-item">
+                <div class="money"><span class="sign">￥</span><span class="amount">30.00</span></div>
+                <div class="date"><span class="sign">@</span><span class="occurred-time">2011/12/25</span></div>
+                <div class="category"><span class="label">Cate:</span><span class="content">饮食</span></div>
+                <div clss="tags"><span class="label">Tags:</span><span class="tags-item">礼品</span><span class="tags-item">请客</span></div>
+                <div class="remark"><span class="label">说明:</span><div class="content">请xx吃饭</div></div>
+            </li>
+            
+        </ul>
+        <div class="toolbar-bottom">
+            <button class="statistics">统计</button>
+        </div>
+    </div>
+    
 
 
 
@@ -61,10 +61,10 @@ button{
 <script src="js/tallybook.js"></script>
 
 <script>
-	var ul = document.getElementsByTagName('ul')[0];
-	var html = ul.innerHTML ;
-	for(var i = 0; i< 4; i++){
-		html += html;
-	}
-	ul.innerHTML = html;
+    var ul = document.getElementsByTagName('ul')[0];
+    var html = ul.innerHTML ;
+    for(var i = 0; i< 4; i++){
+        html += html;
+    }
+    ul.innerHTML = html;
 </script>
