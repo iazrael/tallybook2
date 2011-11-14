@@ -1,6 +1,7 @@
-Az.$package('tally.net', {
+Z.$package('tally.net', {
     request: 'tally.net.jquery'
 }, function(z, dependences){
+    var packageContext = this;
     
     var REQUIRE_URLS = {
         GET_BILL: 'service/get_bill.php',
@@ -18,9 +19,43 @@ Az.$package('tally.net', {
         GET_TAGS: 'service/get_tags.php'
     };
 
+    /**
+     * @param {String} url
+     * @param {Object} option
+     *   option.method || 'GET';
+     *   option.context || window;
+     *   option.success;
+     *   option.argument || {};
+     *   option.cacheTime;
+     *   option.data
+     */
     var require = function(url, option){
+        var caller;
+        for(var i in packageContext){
+            if(packageContext[i] === require.caller){
+                caller = i;
+                break;
+            }
+        }
+        if(caller){
+            option.argument = option.argument || {};
+            option.argument.caller = caller;
+            option.success = requireSuccess;
+        }
         dependences.request.require(url, option);
     };
+    
+    var requireSuccess = function(data){
+        var caller = data.argument.caller;
+        delete data.argument.caller;
+        caller = caller.charAt(0).toUpperCase() + caller.substr(1);
+        if(data.success){
+            z.message.notify(caller + 'Success', data);
+        }else{
+            z.message.notify(caller + 'Failure', data);
+        }
+    }
+    
     
     this.getBill = function(option){
         require(REQUIRE_URLS.GET_BILL_LIST, option);
@@ -58,7 +93,7 @@ Az.$package('tally.net', {
 /**
  * 网络层的jquery实现
  */
-Az.$package('tally.net.jquery', function(z){
+Z.$package('tally.net.jquery', function(z){
     
     var requestCache = {};
     
@@ -94,7 +129,7 @@ Az.$package('tally.net.jquery', function(z){
     this.require = function(url, option){
         var method = option.method || 'GET';
         var context = option.context || window;
-        var callback = option.callback;
+        var success = option.success;
         var argument = option.argument || {};
         var cacheTime = option.cacheTime;
         var wrapCallback;
@@ -102,24 +137,26 @@ Az.$package('tally.net.jquery', function(z){
             var requireUrl = getRequireUrl(url, option.data);
             var cacheData = getCacheData(requireUrl, cacheTime);
             if(cacheData){//use the cache
-                callback.call(context, cacheData);
+                success.call(context, cacheData);
                 return;
             }else{//wrap the get request for cache
                 wrapCallback = function(data){
+                    data = z.json.parse(data);
                     if(data.success){
                         cacheResponse(requireUrl, data, cacheTime);
                     }
                     data.argument = argument;
-                    callback.call(context, data);
+                    success.call(context, data);
                 }
-                option.callback = wrapCallback;
+                option.success = wrapCallback;
             }
         }else{
             wrapCallback = function(data){
+                data = z.json.parse(data);
                 data.argument = argument;
-                callback.call(context, data);
+                success.call(context, data);
             }
-            option.callback = wrapCallback;
+            option.success = wrapCallback;
         }
         //use jquery to send ajax request
         $.ajax({

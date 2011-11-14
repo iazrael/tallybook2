@@ -1,4 +1,4 @@
-Az.$package('tally.model', function(z){
+Z.$package('tally.model', function(z){
     /**
      * @class
      * @name Bill

@@ -1,31 +1,15 @@
-Az.$$package('tally', function(z){
-    
-});
-Az.$package('tally.controller', [
-    'tally.model',
-    'tally.net',
+
+Z.$package('tally', [
+    'tally.controller',
     'tally.view'
 ], function(z){
-    
-});
-Az.$package('tally.view', function(z){
-    
-    var TEMPLATES = {
-        BILL_LIST: ''
-    };
-    
-    /**
-     * @class 
-     * @name BillList
-     */
-    function BillList(option) {
-        this.container = option.container;
+
+    this.init = function(){
+        tally.view.init();
+        tally.controller.init();
     }
-    
-    BillList.prototype = {
-        render: function(){
-            
-        }
-    };
-    
+});
+
+jQuery(function($){
+    tally.init();
 });
