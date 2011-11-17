@@ -6,19 +6,14 @@ Z.$package('tally.controller', [
     'tally.view'
 ], function(z){
     
-    var CONFIG = {
-        BILL_ITEMS_PER_PAGE: 10
-    
-    };
-    
-    
+    var BILL_LIST_CONFIG = alloy.config.BILL_LIST_CONFIG;
     
     var loadBillList = function(date, page, pageCount){
-        pageCount = pageCount || CONFIG.BILL_ITEMS_PER_PAGE;
+        pageCount = pageCount || BILL_LIST_CONFIG.BILL_ITEMS_PER_PAGE;
         if(page < 0){
             page = 0;
         }
-        var start = page * CONFIG.BILL_ITEMS_PER_PAGE;
+        var start = page * pageCount;
         var data = {
             date: date,
             start: start,

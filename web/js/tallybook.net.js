@@ -3,21 +3,7 @@ Z.$package('tally.net', {
 }, function(z, dependences){
     var packageContext = this;
     
-    var REQUIRE_URLS = {
-        GET_BILL: 'service/get_bill.php',
-        ADD_BILL: 'service/add_bill.php',
-        DELETE_BILL: 'service/delete_bill.php',
-        UPDATE_BILL: 'service/update_bill.php',
-        
-        GET_BILL_LIST: 'service/get_bill_list.php',
-        
-        GET_CATEGORY: 'service/get_category.php',
-        ADD_CATEGORY: 'service/add_category.php',
-        
-        GET_CATEGORY_LIST: 'service/get_category_list.php',
-        
-        GET_TAGS: 'service/get_tags.php'
-    };
+    var REQUIRE_URLS = tally.config.REQUIRE_URLS;
 
     /**
      * @param {String} url
