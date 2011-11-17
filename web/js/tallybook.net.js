@@ -3,7 +3,7 @@ Z.$package('tally.net', {
 }, function(z, dependences){
     var packageContext = this;
     
-    var REQUIRE_URLS = tally.config.REQUIRE_URLS;
+    var REQUIRE_URLS = tally.config.AJAX_REQUIRE_URLS;
 
     /**
      * @param {String} url

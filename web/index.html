@@ -38,16 +38,23 @@ button{
         <div class="toolbar-top">
             <div class="date-picker"><input type="date"/><button>日期</button></div><button>今日</button><button>今月</button>
         </div>
-        <ul class="bill-list">
-            <li class="bill-item">
-                <div class="money"><span class="sign">￥</span><span class="amount">30.00</span></div>
-                <div class="date"><span class="sign">@</span><span class="occurred-time">2011/12/25</span></div>
-                <div class="category"><span class="label">Cate:</span><span class="content">饮食</span></div>
-                <div class="tags"><span class="label">Tags:</span><span class="tags-item">礼品</span><span class="tags-item">请客</span></div>
-                <div class="remark"><span class="label">说明:</span><div class="content">请xx吃饭</div></div>
-            </li>
-            
-        </ul>
+        <div id="billListContainer" class="bill-list-container">
+<script id="billListTemplate" type="text/plain">
+            <ul class="bill-list">
+            <% for(var i in list){ %>
+                <li class="bill-item">
+                    <div class="money"><span class="sign">￥</span><span class="amount"><%=list[i].amount%></span></div>
+                    <div class="date"><span class="sign">@</span><span class="occurred-time"><%=list[i].occurredTime%></span></div>
+                    <div class="category"><span class="label">Cate:</span><span class="content"><%=list[i].cate%></span></div>
+                    <div class="tags"><span class="label">Tags:</span>
+                        </span><span class="tags-item"><%=list[i].tags%></span>
+                    </div>
+                    <div class="remark"><span class="label">说明:</span><div class="content"><%=list[i].remark%></div></div>
+                </li>
+            <% } %>
+            </ul>
+</script>
+        </div>
         <div class="toolbar-bottom">
             <button class="statistics">统计</button>
         </div>
@@ -71,4 +78,5 @@ button{
 <script src="js/tallybook.view.js"></script>
 <script src="js/tallybook.model.js"></script>
 <script src="js/tallybook.net.js"></script>
+<script src="js/tallybook.start.js"></script>
 

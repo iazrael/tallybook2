@@ -10,6 +10,3 @@ Z.$package('tally', [
     }
 });
 
-jQuery(function($){
-    tally.init();
-});

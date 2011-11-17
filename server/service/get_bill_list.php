@@ -30,7 +30,7 @@
 	}
 	
 	$result[success] = 1;
-	$result[result]['list''] = $list;
+	$result[result]['list'] = $list;
 	print($json->encode($result));
 
 

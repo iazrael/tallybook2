@@ -1,11 +1,12 @@
 
 Z.$package('tally.config', function(z){
 
+    
     /**
      * ajax 服务请求的路径
      */
-    this.REQUIRE_URLS = {
-        SERVICE_ROOT: 'server/service/',
+    var SERVICE_ROOT = '../server/service/';
+    this.AJAX_REQUIRE_URLS = {
         GET_BILL: 'get_bill.php',
         ADD_BILL: 'add_bill.php',
         DELETE_BILL: 'delete_bill.php',
@@ -20,6 +21,10 @@ Z.$package('tally.config', function(z){
         
         GET_TAGS: 'get_tags.php'
     };
+    
+    for(var i in this.AJAX_REQUIRE_URLS){
+        this.AJAX_REQUIRE_URLS[i] = SERVICE_ROOT + this.AJAX_REQUIRE_URLS[i];
+    }
     
     /**
      * 账单列表的配置
