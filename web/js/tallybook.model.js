@@ -36,6 +36,23 @@ Z.$package('tally.model', function(z){
     };
     
     /**
+     * 把后台返回的数据转换成一个Bill实例返回
+     */
+    Bill.parse = function(data){
+        var bill = new Bill();
+        bill.id = data.id;
+        bill.type = data.type;
+        bill.cate = data.cate;
+        bill.tags = data.tags;
+        bill.amount = data.amount;
+        bill.remark = data.remark;
+        bill.occurredTime = data.occurredTime;
+        bill.createTime = data.createTime;
+        bill.updateTime = data.updateTime;
+        return bill;
+    }
+    
+    /**
      * @class
      * @name BillList
      */
@@ -45,13 +62,10 @@ Z.$package('tally.model', function(z){
     
     BillList.prototype = {
         add: function(bill){
-            
+            this.list.push(bill);
         },
         remove: function(bill){
-        
-        },
-        update: function(bill){
-        
+            return z.array.remove(this.list, bill);
         },
         toDataObject: function(){
             var object = {
@@ -63,6 +77,16 @@ Z.$package('tally.model', function(z){
             return z.json.stringify(this.toDataObject());
         }
     };
+    
+    BillList.parse = function(list){
+        var billList = new BillList();
+        var bill;
+        for(var i in list){
+            bill = Bill.parse(list[i]);
+            billList.add(bill);
+        }
+        return billList;
+    }
     
     this.Bill = Bill;
     this.BillList = BillList;

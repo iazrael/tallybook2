@@ -141,7 +141,7 @@ Z.$package('tally.net.jquery', function(z){
                 return;
             }else{//wrap the get request for cache
                 wrapCallback = function(data){
-                    data = z.json.parse(data);
+//                    data = z.json.parse(data);
                     if(data.success){
                         cacheResponse(requireUrl, data, cacheTime);
                     }
@@ -152,7 +152,7 @@ Z.$package('tally.net.jquery', function(z){
             }
         }else{
             wrapCallback = function(data){
-                data = z.json.parse(data);
+//                data = z.json.parse(data);
                 data.argument = argument;
                 success.call(context, data);
             }

@@ -30,18 +30,10 @@ Z.$package('tally.controller', [
         });
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
     this.init = function(){
-        z.message.on('GetBillListSuccess', function(type, message){
-            console.log(message);
-            
+        z.message.on('GetBillListSuccess', function(data){
+            var billList = tally.model.BillList.parse(data.result.list);
+            tally.view.BillList.render(billList);
         });
         
         
