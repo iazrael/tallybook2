@@ -1,22 +1,68 @@
-Z.$package('tally.model', function(z){
+
+;Z.$package('tally.model', function(z){
+
+
+    var BaseModel = Z.$class({
+        /**
+         * @param  {String} prop  
+         * 
+         */
+        setter: function(prop){
+            var name = 'set' + prop;
+            this[name] = function(value){
+                var oldValue = this[prop];
+                this[prop] = value;
+                z.message.notify(this, name, { value: type, oldValue: oldType });
+            }
+        },
+        /**
+         * @param  {Array} props  
+         * 
+         */
+        setters: function(obj, props){
+            for (var i = 0; i < props.length; i++) {
+                this.setter(props[i]);
+            };
+        },
+        toDataObject: function(){
+            var object = {
+            };
+            return object;
+        },
+        toJSONString: function(){
+            JSON.stringify(this.toDataObject());
+        }
+    });
+
+
     /**
      * @class
      * @name Bill
      */
-    function Bill(){
-        this.id = 0;
-        this.type = 0;
-        this.cate = 0;
-        this.tags = '';
-        this.amount = 0;
-        this.remark = '';
-        var now = +new Date;
-        this.occurredTime = now;
-        this.createTime = now;
-        this.updateTime = now;
-    };
-    
-    Bill.prototype = {
+    var Bill = Z.$class({
+        name: 'Bill'
+    }, {
+        init: function(){
+            this.id = 0;
+            this.type = 0;
+            this.cate = 0;
+            this.tags = '';
+            this.amount = 0;
+            this.remark = '';
+            var now = +new Date;
+            this.occurredTime = now;
+            this.createTime = now;
+            this.updateTime = now;
+
+            this.setters([
+                'type',
+                'cate',
+                'tags',
+                'amount',
+                'remark',
+                'occurredTime'
+            ]);
+        },
         toDataObject: function(){
             var object = {
                 id: this.id,
@@ -28,12 +74,8 @@ Z.$package('tally.model', function(z){
                 occurredTime: this.occurredTime
             };
             return object;
-        },
-        toJSONString: function(){
-            return z.json.stringify(this.toDataObject());
         }
-        
-    };
+    });
     
     /**
      * 把后台返回的数据转换成一个Bill实例返回
@@ -74,7 +116,7 @@ Z.$package('tally.model', function(z){
             return object;
         },
         toJSONString: function(){
-            return z.json.stringify(this.toDataObject());
+            return JSON.stringify(this.toDataObject());
         }
     };
     
