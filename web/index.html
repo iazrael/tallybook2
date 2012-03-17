@@ -39,21 +39,8 @@ button{
             <div class="date-picker"><input type="date"/><button>日期</button></div><button>今日</button><button>今月</button>
         </div>
         <div id="billListContainer" class="bill-list-container">
-<script id="billListTemplate" type="text/plain">
-            <ul class="bill-list">
-            <% for(var i in list){ %>
-                <li class="bill-item">
-                    <div class="money"><span class="sign">￥</span><span class="amount"><%=list[i].amount%></span></div>
-                    <div class="date"><span class="sign">@</span><span class="occurred-time"><%=list[i].occurredTime%></span></div>
-                    <div class="category"><span class="label">Cate:</span><span class="content"><%=list[i].cate%></span></div>
-                    <div class="tags"><span class="label">Tags:</span>
-                        </span><span class="tags-item"><%=list[i].tags%></span>
-                    </div>
-                    <div class="remark"><span class="label">说明:</span><div class="content"><%=list[i].remark%></div></div>
-                </li>
-            <% } %>
+            <ul id="billList" class="bill-list">
             </ul>
-</script>
         </div>
         <div class="toolbar-bottom">
             <button class="statistics">统计</button>
@@ -61,16 +48,24 @@ button{
     </div>
     
 
+<script id="billItemTmpl" type="text/plain">
+    <% for(var i in list){ %>
+        <li class="bill-item">
+            <div class="money"><span class="sign">￥</span><span class="amount"><%=list[i].amount%></span></div>
+            <div class="date"><span class="sign">@</span><span class="occurred-time"><%=list[i].occurredTime%></span></div>
+            <div class="category"><span class="label">Cate:</span><span class="content"><%=list[i].cate%></span></div>
+            <div class="tags"><span class="label">Tags:</span>
+                </span><span class="tags-item"><%=list[i].tags%></span>
+            </div>
+            <div class="remark"><span class="label">说明:</span><div class="content"><%=list[i].remark%></div></div>
+        </li>
+    <% } %>
+</script>
+
 
 <script src="../lib/jquery/jquery-1.6.4.js"></script>
 
-<script src="../lib/ztool/z.core.js"></script>
-<script src="../lib/ztool/z.delay.js"></script>
-<script src="../lib/ztool/z.message.js"></script>
-<script src="../lib/ztool/z.json.js"></script>
-<script src="../lib/ztool/z.array.js"></script>
-<script src="../lib/ztool/z.string.js"></script>
-<script src="../lib/ztool/z.util.js"></script>
+<script src="js/ztool.all.js"></script>
 
 <script src="js/tallybook.js"></script>
 <script src="js/tallybook.config.js"></script>

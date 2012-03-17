@@ -7,30 +7,22 @@
          * @param  {String} prop  
          * 
          */
-        setter: function(prop){
+        setter: function(prop, notifyContext){
             var name = 'set' + prop;
             this[name] = function(value){
                 var oldValue = this[prop];
                 this[prop] = value;
-                z.message.notify(this, name, { value: type, oldValue: oldType });
+                z.message.notify(notifyContext || this, name, { value: type, oldValue: oldType });
             }
         },
         /**
          * @param  {Array} props  
          * 
          */
-        setters: function(obj, props){
+        setters: function(obj, props, notifyContext){
             for (var i = 0; i < props.length; i++) {
-                this.setter(props[i]);
+                this.setter(props[i], notifyContext);
             };
-        },
-        toDataObject: function(){
-            var object = {
-            };
-            return object;
-        },
-        toJSONString: function(){
-            JSON.stringify(this.toDataObject());
         }
     });
 
@@ -40,9 +32,11 @@
      * @name Bill
      */
     var Bill = Z.$class({
-        name: 'Bill'
+        name: 'Bill',
+        extend: BaseModel
     }, {
-        init: function(){
+        init: function(option){
+            option = option || {};
             this.id = 0;
             this.type = 0;
             this.cate = 0;
@@ -61,7 +55,7 @@
                 'amount',
                 'remark',
                 'occurredTime'
-            ]);
+            ], option.notifyContext);
         },
         toDataObject: function(){
             var object = {
@@ -74,61 +68,21 @@
                 occurredTime: this.occurredTime
             };
             return object;
+        },
+        toJSONString: function(){
+            JSON.stringify(this.toDataObject());
         }
     });
     
-    /**
-     * 把后台返回的数据转换成一个Bill实例返回
-     */
-    Bill.parse = function(data){
-        var bill = new Bill();
-        bill.id = data.id;
-        bill.type = data.type;
-        bill.cate = data.cate;
-        bill.tags = data.tags;
-        bill.amount = data.amount;
-        bill.remark = data.remark;
-        bill.occurredTime = data.occurredTime;
-        bill.createTime = data.createTime;
-        bill.updateTime = data.updateTime;
-        return bill;
-    }
     
-    /**
-     * @class
-     * @name BillList
-     */
-    function BillList(){
-        this.list = [];
-    };
-    
-    BillList.prototype = {
-        add: function(bill){
-            this.list.push(bill);
-        },
-        remove: function(bill){
-            return z.array.remove(this.list, bill);
-        },
-        toDataObject: function(){
-            var object = {
-                list: this.list
-            };
-            return object;
-        },
-        toJSONString: function(){
-            return JSON.stringify(this.toDataObject());
+    var BillList = z.$class({
+        name: 'BillList',
+        extend: z.class.Collection
+    }, {
+        init: function(option){
+            
         }
-    };
-    
-    BillList.parse = function(list){
-        var billList = new BillList();
-        var bill;
-        for(var i in list){
-            bill = Bill.parse(list[i]);
-            billList.add(bill);
-        }
-        return billList;
-    }
+    })
     
     this.Bill = Bill;
     this.BillList = BillList;

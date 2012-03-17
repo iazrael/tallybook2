@@ -34,7 +34,7 @@ Z.$package('tally.net', {
     var requireSuccess = function(data){
         var caller = data.argument.caller;
         delete data.argument.caller;
-        caller = caller.charAt(0).toUpperCase() + caller.substr(1);
+        // caller = caller.charAt(0).toUpperCase() + caller.substr(1);
         if(data.success){
             z.message.notify(caller + 'Success', data);
         }else{
@@ -123,7 +123,9 @@ Z.$package('tally.net.jquery', function(z){
             var requireUrl = getRequireUrl(url, option.data);
             var cacheData = getCacheData(requireUrl, cacheTime);
             if(cacheData){//use the cache
-                success.call(context, cacheData);
+                z.util.delay(function(){
+                    success.call(context, cacheData);
+                });
                 return;
             }else{//wrap the get request for cache
                 wrapCallback = function(data){
@@ -132,7 +134,9 @@ Z.$package('tally.net.jquery', function(z){
                         cacheResponse(requireUrl, data, cacheTime);
                     }
                     data.argument = argument;
-                    success.call(context, data);
+                    z.util.delay(function(){//脱离jq的回调流程
+                        success.call(context, data);
+                    });
                 }
                 option.success = wrapCallback;
             }
@@ -140,7 +144,9 @@ Z.$package('tally.net.jquery', function(z){
             wrapCallback = function(data){
 //                data = z.json.parse(data);
                 data.argument = argument;
-                success.call(context, data);
+                z.util.delay(function(){
+                    success.call(context, data);
+                });
             }
             option.success = wrapCallback;
         }

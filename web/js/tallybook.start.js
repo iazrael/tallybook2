@@ -1,5 +1,5 @@
 
 
-jQuery(function($){
+;jQuery(function($){
     tally.init();
 });

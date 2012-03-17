@@ -1,15 +1,7 @@
-jQuery(function($){
 Z.$package('tally.view', [
     'tally.view.billList'
 ],
 function(z){
-    
-    this.getTemplate = function(id){
-        var $script = $('#' + id);
-        var tmpl = $script.html();
-        $script.remove();
-        return tmpl;
-    }
     
     this.init = function(){
         tally.view.billList.init();
@@ -18,23 +10,27 @@ function(z){
 
 Z.$package('tally.view.billList', function(z){
     
-    var TEMPLATES = {
-        BILL_LIST: ''
-    };
     
-    var $billListCon;
-    var billListTmpl;
+    var $billListContainer,
+        $billList;
     
     this.init = function(){
-        $billListCon = $('#billListContainer');
-        billListTmpl = tally.view.getTemplate('billListTemplate');
+        $billListContainer = $('#billListContainer');
+        $billList = $('#billList');
     }
     
-    this.render = function(billList){
+    this.add = function(bills){
+        z.dom.render($billList.get(0), 'billItemTmpl', {list: bills}, true);
+    }
+
+    this.remove = function(bills){
+
+    }
+
+    this.removeAll = function(){
         
-        var html = z.string.template(billListTmpl, billList);
-        $billListCon.html(html);
     }
+
     
 });
-});
+
