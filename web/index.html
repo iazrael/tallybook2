@@ -2,62 +2,38 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>My Tally Book</title>
-    <style>
-button{
-    border: none;
-    background: #369;
-    color: white;
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 3px 10px;
-    cursor: pointer;
-}
-    
-    
-.bill-list{
-    font-size: 16px;
-    line-height: 1.5;
-}
-.bill-item div{
-    display: inline-block;
-}
-.bill-item .sign{
-    color: grey;
-}
-
-.bill-item .label{
-    color: grey;
-    font-style: italic;
-}
-
-    </style>
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no;" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" href="touch-icon.png" />
+    <title>TallyBook2</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-    <div class="wrap">
-        <div class="toolbar-top">
-            <div class="date-picker"><input type="date"/><button>日期</button></div><button>今日</button><button>今月</button>
-        </div>
-        <div id="billListContainer" class="bill-list-container">
-            <ul id="billList" class="bill-list">
-            </ul>
-        </div>
-        <div class="toolbar-bottom">
-            <button class="statistics">统计</button>
-        </div>
+
+<div class="wrapper">
+    <div class="toolbar">
+        <input id="dateInput" type="date"/><button cmd="createBill">New</button>
     </div>
+    <div id="billListContainer" class="bill-list-container">
+        <ul id="billList" class="bill-list"></ul>
+    </div>
+</div>
     
 
 <script id="billItemTmpl" type="text/plain">
-    <% for(var i in list){ %>
-        <li class="bill-item">
-            <div class="money"><span class="sign">￥</span><span class="amount"><%=list[i].amount%></span></div>
-            <div class="date"><span class="sign">@</span><span class="occurred-time"><%=list[i].occurredTime%></span></div>
-            <div class="category"><span class="label">Cate:</span><span class="content"><%=list[i].cate%></span></div>
-            <div class="tags"><span class="label">Tags:</span>
-                </span><span class="tags-item"><%=list[i].tags%></span>
+    <% 
+        var bill;
+        for(var l in list){ 
+            bill = list[l];
+    %>
+        <li class="bill-item" id="billItem<%=bill.id%>">
+            <div class="money"><span class="sign">￥</span><span class="amount"><%=bill.amount%></span></div>
+            <div class="date"><span class="sign">@</span><span class="occurred-time"><%=bill.occurredTime%></span></div>
+            <div class="category"><span class="label">Cate</span><span class="content"><%=bill.cate%></span></div>
+            <div class="tags"><span class="label">Tags</span>
+                </span><span class="tags-item"><%=bill.tags%></span>
             </div>
-            <div class="remark"><span class="label">说明:</span><div class="content"><%=list[i].remark%></div></div>
+            <div class="remark"><span class="label">Desc</span><div class="content"><%=bill.remark%></div></div>
         </li>
     <% } %>
 </script>

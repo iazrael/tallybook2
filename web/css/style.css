@@ -1,0 +1,36 @@
+html, body{
+	margin: 0;
+	padding: 0;
+}
+ul, li{
+	margin: 0;
+	padding: 0;
+}
+
+button{
+    
+}
+    
+
+.wrapper{
+	font-size: 16px;
+    line-height: 1.5;
+
+    /* for test */
+    width: 320px;
+}
+    
+.bill-list{
+    
+}
+.bill-item div{
+    display: inline-block;
+    vertical-align: middle;
+}
+.bill-item .sign, .bill-item .label{
+    color: grey;
+}
+
+.bill-item .label{
+    font-style: italic;
+}

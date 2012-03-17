@@ -4,7 +4,18 @@ Z.$package('tally.view', [
 function(z){
     
     this.init = function(){
-        tally.view.billList.init();
+        this.toolbar.init();
+        this.billList.init();
+    }
+});
+
+Z.$package('tally.view.toolbar', function(z){
+    
+    var $dateInput;
+
+    this.init = function(){
+        $dateInput = $('#dateInput');
+        $dateInput.val('2012-05-05');
     }
 });
 
@@ -14,6 +25,10 @@ Z.$package('tally.view.billList', function(z){
     var $billListContainer,
         $billList;
     
+    var removeBill = function(billId){
+
+    }
+
     this.init = function(){
         $billListContainer = $('#billListContainer');
         $billList = $('#billList');
@@ -24,7 +39,9 @@ Z.$package('tally.view.billList', function(z){
     }
 
     this.remove = function(bills){
-
+        for (var i = 0; i < bills.length; i++) {
+            bill[i]
+        };
     }
 
     this.removeAll = function(){

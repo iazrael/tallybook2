@@ -80,7 +80,7 @@ Z.$package('tally.net', {
  * 网络层的jquery实现
  */
 Z.$package('tally.net.jquery', function(z){
-    
+    //TODO 计划着把jq移除, 我需要jq的什么呢?
     var requestCache = {};
     
     var getRequireUrl = function(url, data){
