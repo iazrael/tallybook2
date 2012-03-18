@@ -69,7 +69,7 @@ Z.$package('tally.controller', [
         });
         
         //statr logic
-        var depQueue = new z.class.DependentQueue({
+        var depQueue = new z.util.DependentQueue({
             onPause: function(queue, item){
                 if(confirm(item.id + ' 失败, 是否忽略?')){
                     queue.next();
@@ -82,6 +82,21 @@ Z.$package('tally.controller', [
             },
             onFinish: function(){
                 z.message.notify('systemReady');
+            }
+        });
+
+        depQueue.add({
+            id: 'getTagList',
+            exec: function(queue, item){
+                loadTagList(function(response){
+                    if(response.success){
+                        z.message.notify('getTagListSuccess', response);
+                        queue.next();
+                    }else{
+                        z.message.notify('getTagListFailure', response);
+                        queue.pause();
+                    }
+                });
             }
         });
         depQueue.add({
@@ -99,20 +114,6 @@ Z.$package('tally.controller', [
             }
         });
         
-        depQueue.add({
-            id: 'getTagList',
-            exec: function(queue, item){
-                loadTagList(function(response){
-                    if(response.success){
-                        z.message.notify('getTagListSuccess', response);
-                        queue.next();
-                    }else{
-                        z.message.notify('getTagListFailure', response);
-                        queue.pause();
-                    }
-                });
-            }
-        });
         //run it
         depQueue.run();
     }
@@ -165,6 +166,28 @@ Z.$package('tally.controller', [
         var list = [];
         for(var i in data){
             list.push(parseBill(data[i]));
+        }
+        return list;
+    }
+
+    var parseTags = function(data){
+        var list = [], tag;
+        for(var i in data){
+            tag = new tally.model.Tag({ notifyContext: tagList });
+            tag.id = data[i].id;
+            tag.name = data[i].name;
+            list.push(tag);
+        }
+        return list;
+    }
+
+    var parseCategorys = function(data){
+        var list = [], tag;
+        for(var i in data){
+            tag = new tally.model.Tag({ notifyContext: tagList });
+            tag.id = data[i].id;
+            tag.name = data[i].name;
+            list.push(tag);
         }
         return list;
     }

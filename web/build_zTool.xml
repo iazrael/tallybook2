@@ -16,12 +16,14 @@
             <path path="${zTool}z.class.js" />
             <path path="${zTool}z.message.js" />
             
+            <path path="${zTool}z.date.js" />
             <path path="${zTool}z.dom.js" />
+            <path path="${zTool}z.number.js" />
             <path path="${zTool}z.string.js" />
 
-            <path path="${zTool}z.class.Beater.js" />            
-            <path path="${zTool}z.class.Collection.js" />            
-            <path path="${zTool}z.class.DependentQueue.js" />            
+            <path path="${zTool}z.util.Beater.js" />            
+            <path path="${zTool}z.util.Collection.js" />            
+            <path path="${zTool}z.util.DependentQueue.js" />            
 
             <path path="${zTool}z.util.delay.js" />            
         </concat>
