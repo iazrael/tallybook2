@@ -9,18 +9,18 @@
 	$result = array();
 	$list = array();
 
-	$_SESSION['uid'] = 'atlas';
+	$_SESSION['uid'] = 1;
 	$uid = $_SESSION['uid'];
 
 	$queryString = "SELECT id, name FROM tag WHERE uid='$uid'";
 	$qresult = $tbdb->query($queryString);
 	while($row=$tbdb->getarray($qresult)){
 		$list[] = array(
-				id=>$row[id],
+				id=>$row[id] + 0,
 				name=>$row[name]
 			);
 	}
-	
+
 	$result[success] = 1;
 	$result[result]['list'] = $list;
 	print($json->encode($result));

@@ -6,8 +6,6 @@ Z.$package('tally.controller', [
     'tally.view'
 ], function(z){
     
-    var billListConfig = tally.config.BILL_LIST_CONFIG;
-
     var billList;
     var tagList;
     var cateList;
@@ -121,7 +119,7 @@ Z.$package('tally.controller', [
     // net require
     //**************************************************
     var loadBillList = function(date, page, pageCount){
-        pageCount = pageCount || billListConfig.BILL_ITEMS_PER_PAGE;
+        pageCount = pageCount || tally.config.BILL_ITEMS_PER_PAGE;
         if(!page || page < 0){
             page = 1;
         }
@@ -181,13 +179,29 @@ Z.$package('tally.controller', [
         return list;
     }
 
+    var parseCategory = function(data){
+        var cate = new tally.model.Category({ notifyContext: cateList });
+        cate.id = data.id;
+        cate.name = data.name;
+        cate.index = data.index;
+        cate.type = data.type;
+        cate.parentId = data.parentId;
+        return cate;
+    }
+
     var parseCategorys = function(data){
-        var list = [], tag;
+        var list = [], cate, child, children;
         for(var i in data){
-            tag = new tally.model.Tag({ notifyContext: tagList });
-            tag.id = data[i].id;
-            tag.name = data[i].name;
-            list.push(tag);
+            cate = parseCategory(data[i]);
+            children = data[i].children;
+            if(children){
+                cate.children = [];
+                for(var j in children){
+                    child = parseCategory(children[j]);
+                    cate.children.push(child);
+                }
+            }
+            list.push(cate);
         }
         return list;
     }
