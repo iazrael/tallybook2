@@ -4,7 +4,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no;" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="apple-touch-icon" href="touch-icon.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <title>TallyBook2</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
@@ -67,7 +67,7 @@
         for(var l in list){ 
             bill = list[l];
     %>
-        <li class="bill-item" id="billItem<%=bill.id%>">
+        <li class="bill-item" id="bill-item-<%=bill.id%>">
             <div class="money"><span class="sign">￥</span><span class="amount"><%=bill.amount%></span>
             </div>
             <div class="date"><span class="sign">@</span><span class="occurred-time"><%=bill.occurredTime%></span>

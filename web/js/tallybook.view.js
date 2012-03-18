@@ -8,6 +8,10 @@ function(z){
         this.billList.init();
         this.billForm.init();
     }
+
+    this.alert = function(){
+        
+    }
 });
 
 Z.$package('tally.view.toolbar', function(z){
@@ -35,7 +39,7 @@ Z.$package('tally.view.billList', function(z){
         $billList;
     
     var removeBill = function(billId){
-        $billList.remove('#billItem' + billId);
+        $billList.remove('#bill-item-' + billId);
     }
 
     this.init = function(){
@@ -68,7 +72,7 @@ Z.$package('tally.view.billForm', function(z){
 
 
     this.init = function(){
-        
+
     }
 });
 

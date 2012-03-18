@@ -19,7 +19,9 @@ Z.$package('tally.config', function(z){
         
         GET_CATEGORY_LIST: 'get_category_list.php',
         
-        GET_TAGS: 'get_tags.php'
+        GET_TAGS: 'get_tags.php',
+
+        GET_TAG_LIST: 'get_tag_list.php'
     };
     
     for(var i in this.AJAX_REQUIRE_URLS){
@@ -27,10 +29,15 @@ Z.$package('tally.config', function(z){
     }
     
     /**
-     * 账单列表的配置
+     * 每页账单条数
+     * @type {Number}
      */
-    this.BILL_LIST_CONFIG = {
-         BILL_ITEMS_PER_PAGE: 10
-    };
+    this.BILL_ITEMS_PER_PAGE = 10;
+
+    /**
+     * 日期格式
+     * @type {String}
+     */
+    this.DATE_FORMAT = 'yyyy-MM-dd';
 });
 

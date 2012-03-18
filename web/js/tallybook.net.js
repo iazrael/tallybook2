@@ -7,7 +7,7 @@ Z.$package('tally.net', {
 
     /**
      * @param {String} url
-     * @param {Object} option
+     * @param {Object} option 不指定 success, 将会默认把回调用事件抛出
      *   option.method || 'GET';
      *   option.context || window;
      *   option.success;
@@ -17,28 +17,29 @@ Z.$package('tally.net', {
      */
     var require = function(url, option){
         var caller;
-        for(var i in packageContext){
-            if(packageContext[i] === require.caller){
-                caller = i;
-                break;
+        option = option || {};
+        if(!option.success){
+            for(var i in packageContext){
+                if(packageContext[i] === require.caller){
+                    caller = i;
+                    break;
+                }
             }
-        }
-        if(caller){
-            option.argument = option.argument || {};
             option.argument.caller = caller;
             option.success = requireSuccess;
         }
+        option.argument = option.argument || {};
         dependences.request.require(url, option);
     };
     
-    var requireSuccess = function(data){
-        var caller = data.argument.caller;
-        delete data.argument.caller;
+    var requireSuccess = function(response){
+        var caller = response.argument.caller;
+        delete response.argument.caller;
         // caller = caller.charAt(0).toUpperCase() + caller.substr(1);
-        if(data.success){
-            z.message.notify(caller + 'Success', data);
+        if(response.success){
+            z.message.notify(caller + 'Success', response);
         }else{
-            z.message.notify(caller + 'Failure', data);
+            z.message.notify(caller + 'Failure', response);
         }
     }
     
@@ -51,12 +52,16 @@ Z.$package('tally.net', {
         require(REQUIRE_URLS.GET_BILL_LIST, option);
     };
     
-    this.getCategory = function(optoin){
+    this.getCategory = function(option){
         require(REQUIRE_URLS.GET_CATEGORY, option);
     };
     
-    this.getCategoryList = function(optoin){
+    this.getCategoryList = function(option){
         require(REQUIRE_URLS.GET_CATEGORY_LIST, option);
+    };
+
+    this.getTagList = function(option){
+        require(REQUIRE_URLS.GET_TAG_LIST, option);
     };
     
     this.addBill = function(option){
