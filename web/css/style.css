@@ -6,24 +6,38 @@ ul, li{
 	margin: 0;
 	padding: 0;
 }
-
 button{
     
 }
-    
 
-.wrapper{
-	font-size: 16px;
+body, input, button, textarea, select{
+    font-size: 13px;
     line-height: 1.5;
-
+}
+input, button, select{
+    vertical-align: middle;
+}
+.wrapper{
+    position: relative;
     /* for test */
     width: 320px;
+    border-right: 1px dotted #339;
+
 }
-    
+.toolbar{
+    padding: 5px;
+}
+
+/******************* bill list ************************************/
 .bill-list{
     
 }
-.bill-item div{
+.bill-item{
+    margin: 5px;
+    list-style: decimal ;
+    margin-left: 25px;
+}
+.bill-item > div{
     display: inline-block;
     vertical-align: middle;
 }
@@ -33,4 +47,60 @@ button{
 
 .bill-item .label{
     font-style: italic;
+    margin-right: 3px;
+}
+.bill-item .money{
+    width: 25%;
+}
+.bill-item .date{
+    width: 30%;
+}
+.bill-item .category{
+
+}
+.bill-item .tags, .bill-item .remark{
+    display: block;
+}
+
+/*************** bill form ************************************/
+.bill-form-container{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+.bill-form{
+    background: #fff;
+    margin: 10px 10px 0;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+}
+.bill-form .titlebar{
+    text-align: center;
+    background: red;
+}
+.bill-form .body{
+    padding: 5px;
+}
+.bill-form .body > div{
+    margin: 5px;
+}
+.bill-form .sign, .bill-form .label{
+    width: 20%;
+    text-align: right;
+    display: inline-block;
+    margin-right: 10%;
+}
+.bill-form .content{
+    display: inline-block;
+}
+.bill-form .category .label{
+    vertical-align: middle;
+}
+.bill-form .toolbar{
+    text-align: right;
 }

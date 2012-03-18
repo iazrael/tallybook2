@@ -6,16 +6,25 @@ function(z){
     this.init = function(){
         this.toolbar.init();
         this.billList.init();
+        this.billForm.init();
     }
 });
 
 Z.$package('tally.view.toolbar', function(z){
     
     var $dateInput;
+    var $billListToolbar;
 
     this.init = function(){
         $dateInput = $('#dateInput');
         $dateInput.val('2012-05-05');
+
+        $billListToolbar = $('#billListToolbar');
+        z.dom.bindCommends($billListToolbar.get(0), {
+            createBill: function(param, element, event){
+
+            }
+        });
     }
 });
 
@@ -26,7 +35,7 @@ Z.$package('tally.view.billList', function(z){
         $billList;
     
     var removeBill = function(billId){
-
+        $billList.remove('#billItem' + billId);
     }
 
     this.init = function(){
@@ -40,14 +49,26 @@ Z.$package('tally.view.billList', function(z){
 
     this.remove = function(bills){
         for (var i = 0; i < bills.length; i++) {
-            bill[i]
+            removeBill(bills[i].id);
         };
     }
 
+    this.update = function(bills){
+
+    }
+
     this.removeAll = function(){
-        
+        $billList.empty();
     }
 
     
+});
+
+Z.$package('tally.view.billForm', function(z){
+
+
+    this.init = function(){
+        
+    }
 });
 

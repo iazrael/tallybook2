@@ -77,8 +77,13 @@ Z.$package('tally.controller', [
             alert('getBillListFailure');//TODO
         });
 
-
-        loadBillList();
+        //listen system ready
+        z.message.on('systemReady', function(){
+            loadBillList();
+        });
+        
+        //statr logic
+        var depQueue = new z.class.DependentQueue();
         
     }
     

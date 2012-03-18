@@ -31,7 +31,7 @@
      * @class
      * @name Bill
      */
-    var Bill = Z.$class({
+    var Bill = this.Bill = Z.$class({
         name: 'Bill',
         extend: BaseModel
     }, {
@@ -74,16 +74,90 @@
         }
     });
     
+    /**
+     * @class
+     * @name Category
+     */
+    var Category = this.Category = Z.$class({
+        name: 'Category',
+        extend: BaseModel
+    }, {
+        init: function(option){
+            option = option || {};
+            this.id = 0;
+            this.name = '';
+
+            this.setters([
+                'name'
+            ], option.notifyContext);
+        },
+        toDataObject: function(){
+            var object = {
+                id: this.id,
+                name: this.name
+            };
+            return object;
+        },
+        toJSONString: function(){
+            JSON.stringify(this.toDataObject());
+        }
+    });
+
+    /**
+     * @class
+     * @name Tag
+     */
+    var Tag = this.Tag = Z.$class({
+        name: 'Tag',
+        extend: BaseModel
+    }, {
+        init: function(option){
+            option = option || {};
+            this.id = 0;
+            this.name = '';
+            this.frequency = 0;
+            this.setters([
+                'name',
+                'frequency'
+            ], option.notifyContext);
+        },
+        toDataObject: function(){
+            var object = {
+                id: this.id,
+                name: this.name
+            };
+            return object;
+        },
+        toJSONString: function(){
+            JSON.stringify(this.toDataObject());
+        }
+    });
     
-    var BillList = z.$class({
+    var BillList = this.BillList = z.$class({
         name: 'BillList',
-        extend: z.class.Collection
+        extend: z.util.Collection
     }, {
         init: function(option){
             
         }
-    })
+    });
+
+    var CategoryList = this.CategoryList = z.$class({
+        name: 'CategoryList',
+        extend: z.util.Collection
+    }, {
+        init: function(option){
+            
+        }
+    });
+
+    var TagList = this.TagList = z.$class({
+        name: 'TagList',
+        extend: z.util.Collection
+    }, {
+        init: function(option){
+            
+        }
+    });
     
-    this.Bill = Bill;
-    this.BillList = BillList;
 });

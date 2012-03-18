@@ -11,11 +11,52 @@
 <body>
 
 <div class="wrapper">
-    <div class="toolbar">
-        <input id="dateInput" type="date"/><button cmd="createBill">New</button>
+    <div id="billListToolbar" class="toolbar" cmd="void">
+        <input id="dateInput" type="date"/><input type="button" value="New" cmd="createBill"/>
     </div>
     <div id="billListContainer" class="bill-list-container">
-        <ul id="billList" class="bill-list"></ul>
+        <ul id="billList" class="bill-list" cmd="void"></ul>
+    </div>
+    <div class="bill-form-container">
+        <div class="bill-form" cmd="void">
+            <div class="titlebar">New</div>
+            <div class="body">
+                <div class="date"><span class="sign">@</span><input type="date" required/></div>
+                <div class="category">
+                    <span class="label">Cate</span>
+                    <div class="content">
+                        <div class="cate-row">
+                            <input type="radio" name="cate" checked="checked"/>
+                            <select>
+                                <option value="1">饮食</option>
+                                <option parent="1" value="2">&nbsp;&nbsp;&nbsp;&nbsp;零食/水果</option>
+                                <option parent="1" value="3">&nbsp;&nbsp;&nbsp;&nbsp;工作就餐</option>
+                                <option value="5">日常开支</option>
+                                <option parent="5" value="6">&nbsp;&nbsp;&nbsp;&nbsp;房租物业</option>
+                                <option parent="5" value="7">&nbsp;&nbsp;&nbsp;&nbsp;水电煤气</option>
+                            </select>
+                        </div>
+                        <div class="cate-row">
+                            <input type="radio" name="cate"/>
+                            <select>
+                                <option value="1">饮食</option>
+                                <option parent="1" value="2">&nbsp;&nbsp;&nbsp;&nbsp;零食/水果</option>
+                                <option parent="1" value="3">&nbsp;&nbsp;&nbsp;&nbsp;工作就餐</option>
+                                <option value="5">日常开支</option>
+                                <option parent="5" value="6">&nbsp;&nbsp;&nbsp;&nbsp;房租物业</option>
+                                <option parent="5" value="7">&nbsp;&nbsp;&nbsp;&nbsp;水电煤气</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="money"><span class="sign">￥</span><input type="number" placeholder="0.00" min="0" required /></div>
+                <div class="tags"><span class="label">Tags</span><input type="text" /></div>
+                <div class="remark"><span class="label">Desc</span><input type="text" /></div>
+            </div>
+            <div class="toolbar">
+                <input type="button" value="Cancel" cmd="cancelBillForm"><input type="button" value="Done" cmd="sureBillForm">
+            </div>
+        </div>
     </div>
 </div>
     
@@ -27,13 +68,17 @@
             bill = list[l];
     %>
         <li class="bill-item" id="billItem<%=bill.id%>">
-            <div class="money"><span class="sign">￥</span><span class="amount"><%=bill.amount%></span></div>
-            <div class="date"><span class="sign">@</span><span class="occurred-time"><%=bill.occurredTime%></span></div>
-            <div class="category"><span class="label">Cate</span><span class="content"><%=bill.cate%></span></div>
+            <div class="money"><span class="sign">￥</span><span class="amount"><%=bill.amount%></span>
+            </div>
+            <div class="date"><span class="sign">@</span><span class="occurred-time"><%=bill.occurredTime%></span>
+            </div>
+            <div class="category"><span class="label">Cate</span><span class="content"><%=bill.cate%></span>
+            </div>
             <div class="tags"><span class="label">Tags</span>
                 </span><span class="tags-item"><%=bill.tags%></span>
             </div>
-            <div class="remark"><span class="label">Desc</span><div class="content"><%=bill.remark%></div></div>
+            <div class="remark"><span class="label">Desc</span><div class="content"><%=bill.remark%></div>
+            </div>
         </li>
     <% } %>
 </script>

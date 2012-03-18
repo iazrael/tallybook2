@@ -21,6 +21,7 @@
 
             <path path="${zTool}z.class.Beater.js" />            
             <path path="${zTool}z.class.Collection.js" />            
+            <path path="${zTool}z.class.DependentQueue.js" />            
 
             <path path="${zTool}z.util.delay.js" />            
         </concat>
