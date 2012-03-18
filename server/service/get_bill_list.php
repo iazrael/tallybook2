@@ -7,10 +7,13 @@
 	header('Content-Type: application/json; charset=UTF-8');
 	$json = new Services_JSON();
 	$result = array();
+
+	$_SESSION['uid'] = 1;
+	$uid = $_SESSION['uid'];
 	
-	$date = escape_string($_POST['date']);
-	$start = escape_string($_POST['start']);
-	$count = escape_string($_POST['count']);
+	$date = escape_string($_GET['date']);
+	$start = escape_string($_GET['start']);
+	$count = escape_string($_GET['count']);
 	if(is_numeric($start) && is_numeric($count) && preg_match('/\d{4}-\d{2}-\d{2}/',$date)){
 	
 		if($start < 0 || $count < 0){
@@ -18,37 +21,40 @@
 			$result[code] = $_VAR_VALUE_ERROR;
 			print($json->encode($result));
 		}else{
-			$queryString = "SELECT c.id	FROM account c,category t WHERE t.id = c.categoryId AND c.addTime = '$date'";
+			$queryString = "SELECT id FROM account c WHERE uid = '$uid' AND occurredTime = '$date'";
 			//查询总数
+			
 			$totalCount = $tbdb->getcount($queryString);
-			$records = array();
+			$list = array();
 			if($totalCount){//没有符合条件的记录时，减少一次数据库查询
-				$queryString = "SELECT c.id as id, amount, categoryId, t.name as categoryName, remark, addTime, c.type as accountType
-					FROM account c,category t WHERE t.id = c.categoryId AND c.addTime = '$date' ORDER BY c.createTime DESC LIMIT $start,$count";
+				$queryString = "SELECT id, amount, categoryId, remark, occurredTime, type 
+					FROM account c WHERE occurredTime = '$date' ORDER BY createTime DESC LIMIT $start,$count";
 				$qresult = $tbdb->query($queryString);
+
 				while($row=$tbdb->getarray($qresult)){
-					$records[] = array(
-							id=>$row[id],
-							amount=>$row[amount],
-							categoryId=>$row[categoryId],
-							categoryName=>$row[categoryName],
+					$list[] = array(
+							id=>$row[id] + 0,
+							amount=>$row[amount] + 0,
+							categoryId=>$row[categoryId] + 0,
 							remark=>$row[remark],
-							addTime=>$row[addTime],
-							accountType=>$row[accountType]
+							occurredTime=>$row[occurredTime],
+							type=>$row[type] + 0
 						);
 				}
 			}else{
 				$totalCount = 0;
 			}
 			$result[success] = 1;
-			$result[total] = $totalCount;
-			$result[records] = $records;
-			$result[date] = $date;
+			$result[result]['list'] = $list;
+			$result[result]['total'] = $totalCount;
+			$result[result]['param']['date'] = $date;
+			$result[result]['param']['start'] = $start;
+			$result[result]['param']['count'] = $count;
 			print($json->encode($result));
 		}
 	}else{
 		$result[success] = 0;
-		$result[code] = $_VAR_TYPE_ERROR;
+		$result[errorCode] = $_VAR_TYPE_ERROR;
 		print($json->encode($result));
 	}
 

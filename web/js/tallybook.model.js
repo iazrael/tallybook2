@@ -43,10 +43,6 @@
             this.tags = '';
             this.amount = 0;
             this.remark = '';
-            var now = +new Date;
-            this.occurredTime = now;
-            this.createTime = now;
-            this.updateTime = now;
 
             this.setters([
                 'type',
@@ -147,7 +143,7 @@
         extend: z.util.Collection
     }, {
         init: function(option){
-            
+
         }
     });
 

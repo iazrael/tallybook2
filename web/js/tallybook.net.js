@@ -18,6 +18,7 @@ Z.$package('tally.net', {
     var require = function(url, option){
         var caller;
         option = option || {};
+        option.argument = option.argument || {};
         if(!option.success){
             for(var i in packageContext){
                 if(packageContext[i] === require.caller){
@@ -28,7 +29,7 @@ Z.$package('tally.net', {
             option.argument.caller = caller;
             option.success = requireSuccess;
         }
-        option.argument = option.argument || {};
+        
         dependences.request.require(url, option);
     };
     

@@ -33,11 +33,11 @@ Z.$package('tally.controller', [
         });
 
         //listen model event to change model
-        z.message.on('getBillListSuccess', function(data){
-            var list = parseBills(data.result.list);
+        z.message.on('getBillListSuccess', function(response){
+            var list = parseBills(response.result.list);
             billList.addRange(list);
         });
-        z.message.on('getBillListFailure', function(data){
+        z.message.on('getBillListFailure', function(response){
             alert('getBillListFailure ' + response.errorCode);//TODO
         });
         z.message.on('getCategoryListSuccess', function(response){
@@ -155,8 +155,6 @@ Z.$package('tally.controller', [
         bill.tags = data.tags;
         bill.remark = data.remark;
         bill.occurredTime = data.occurredTime;
-        bill.createTime = data.createTime;
-        bill.updateTime = data.updateTime;
         return bill;
     }
 
