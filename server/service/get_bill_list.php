@@ -21,14 +21,14 @@
 			$result[code] = $_VAR_VALUE_ERROR;
 			print($json->encode($result));
 		}else{
-			$queryString = "SELECT id FROM account c WHERE uid = '$uid' AND occurredTime = '$date'";
+			$queryString = "SELECT id FROM bill c WHERE uid = '$uid' AND occurredTime = '$date'";
 			//查询总数
 			
 			$totalCount = $tbdb->getcount($queryString);
 			$list = array();
 			if($totalCount){//没有符合条件的记录时，减少一次数据库查询
 				$queryString = "SELECT id, amount, categoryId, remark, occurredTime, type 
-					FROM account c WHERE occurredTime = '$date' ORDER BY createTime DESC LIMIT $start,$count";
+					FROM bill c WHERE occurredTime = '$date' ORDER BY createTime DESC LIMIT $start,$count";
 				$qresult = $tbdb->query($queryString);
 
 				while($row=$tbdb->getarray($qresult)){
@@ -46,10 +46,10 @@
 			}
 			$result[success] = 1;
 			$result[result]['list'] = $list;
-			$result[result]['total'] = $totalCount;
+			$result[result]['total'] = $totalCount + 0;
 			$result[result]['param']['date'] = $date;
-			$result[result]['param']['start'] = $start;
-			$result[result]['param']['count'] = $count;
+			$result[result]['param']['start'] = $start + 0;
+			$result[result]['param']['count'] = $count + 0;
 			print($json->encode($result));
 		}
 	}else{

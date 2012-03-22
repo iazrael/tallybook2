@@ -129,31 +129,38 @@
         }
     });
     
-    var BillList = this.BillList = z.$class({
-        name: 'BillList',
+    var List = z.$class({
+        name: 'List',
         extend: z.util.Collection
     }, {
         init: function(option){
             
+        },
+        //把get改成根据key取数据的方式
+        get: function(key){
+            return this.getByKey(key);
+        },
+        remove: function(key){
+            return this.removeByKey(key);
         }
+    });
+
+    var BillList = this.BillList = z.$class({
+        name: 'BillList',
+        extend: List
+    }, {
     });
 
     var CategoryList = this.CategoryList = z.$class({
         name: 'CategoryList',
-        extend: z.util.Collection
+        extend: List
     }, {
-        init: function(option){
-
-        }
     });
 
     var TagList = this.TagList = z.$class({
         name: 'TagList',
-        extend: z.util.Collection
+        extend: List
     }, {
-        init: function(option){
-            
-        }
     });
     
 });

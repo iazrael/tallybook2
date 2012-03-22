@@ -63,7 +63,7 @@ Z.$package('tally.controller', [
 
         //listen system ready
         z.message.on('systemReady', function(){
-            loadBillList();
+            loadBillList('2012-03-19');
         });
         
         //statr logic
@@ -150,7 +150,7 @@ Z.$package('tally.controller', [
         var bill = new tally.model.Bill({ notifyContext: billList });
         bill.id = data.id;
         bill.type = data.type;
-        bill.cate = data.cate;
+        bill.cate = cateList.get(data.categoryId);
         bill.amount = data.amount;
         bill.tags = data.tags;
         bill.remark = data.remark;
@@ -197,6 +197,8 @@ Z.$package('tally.controller', [
                 for(var j in children){
                     child = parseCategory(children[j]);
                     cate.children.push(child);
+                    //全部加到list, 用于根据id查找, 需要用到只有parentCate的时候使用filter过滤出来
+                    list.push(child);
                 }
             }
             list.push(cate);
@@ -205,3 +207,5 @@ Z.$package('tally.controller', [
     }
     
 });
+
+
