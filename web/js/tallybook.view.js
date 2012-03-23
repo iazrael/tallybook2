@@ -9,8 +9,19 @@ function(z){
         this.billForm.init();
     }
 
-    this.alert = function(){
-        
+    this.alert = function(msg){
+        if(!z.isString(msg)){
+            msg = JSON.stringify(msg);
+        }
+        alert(msg);
+    }
+
+    this.confirm = function(msg, callback){
+        var result = false;
+        if(confirm(msg)){
+            result = true;
+        }
+        callback(result);
     }
 });
 
@@ -21,12 +32,21 @@ Z.$package('tally.view.toolbar', function(z){
 
     this.init = function(){
         $dateInput = $('#dateInput');
-        $dateInput.val('2012-05-05');
+        $dateInput.val(tally.util.getDate());
 
         $billListToolbar = $('#billListToolbar');
         z.dom.bindCommends($billListToolbar.get(0), {
             createBill: function(param, element, event){
-
+                //验证时间是否有效什么的
+                var dateStr = $dateInput.val();
+                if(!tally.util.verifyDate(dateStr)){
+                    tally.view.alert('日期格式不正确!');
+                    return;
+                }
+                var data = {
+                    occurredTime: dateStr
+                };
+                tally.view.billForm.newBill(data);
             }
         });
     }
@@ -58,7 +78,7 @@ Z.$package('tally.view.billList', function(z){
     }
 
     this.update = function(bills){
-
+        //TODO
     }
 
     this.removeAll = function(){
@@ -69,10 +89,34 @@ Z.$package('tally.view.billList', function(z){
 });
 
 Z.$package('tally.view.billForm', function(z){
+    var packageContext = this;
 
+    var $billFormContainer;
 
     this.init = function(){
+        $billFormContainer = $('#billFormContainer');
+        // z.dom.render($billFormContainer.get(0), 'billFormTmpl', {});
+        
+        z.dom.bindCommends($billFormContainer.get(0), {
+            cancelBillForm: function(param, element, event){
+                packageContext.hide();
+            },
+            sureBillForm: function(param, element, event){
+                // packageContext.hide();
+            }
+        });
+    }
 
+    this.show = function(){
+        $billFormContainer.addClass('show');
+    }
+
+    this.hide = function(){
+        $billFormContainer.removeClass('show');
+    }
+
+    this.newBill = function(data){
+        this.show();
     }
 });
 

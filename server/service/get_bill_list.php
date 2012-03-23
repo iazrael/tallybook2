@@ -4,7 +4,7 @@
 	require_once('../common.php');
 	require_once('../check-right.php');
 	
-	header('Content-Type: application/json; charset=UTF-8');
+	
 	$json = new Services_JSON();
 	$result = array();
 
@@ -30,12 +30,20 @@
 				$queryString = "SELECT id, amount, categoryId, remark, occurredTime, type 
 					FROM bill c WHERE occurredTime = '$date' ORDER BY createTime DESC LIMIT $start,$count";
 				$qresult = $tbdb->query($queryString);
-
+				
 				while($row=$tbdb->getarray($qresult)){
+					$billId = $row[id];
+					$tags = array();
+					$queryString = "SELECT tagId FROM bill_tags WHERE billId=$billId";
+					$tagResult = $tbdb->query($queryString);
+					while($tag=$tbdb->getarray($tagResult)){
+						$tags[] = $tag[tagId] + 0;
+					}
 					$list[] = array(
 							id=>$row[id] + 0,
 							amount=>$row[amount] + 0,
 							categoryId=>$row[categoryId] + 0,
+							tags => $tags,
 							remark=>$row[remark],
 							occurredTime=>$row[occurredTime],
 							type=>$row[type] + 0

@@ -3,7 +3,7 @@ require_once('JSON.php');
 require_once('common.php');
 
 if($_IS_NEED_LOGIN){
-	session_start();
+	
 	$login = $_SESSION['logininfo'];
 	
 	if(!$_IS_NEED_LOGIN || (isset($login) && $login='3.141592654')){

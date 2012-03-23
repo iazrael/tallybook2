@@ -11,13 +11,15 @@
 <body>
 
 <div class="wrapper">
-    <div id="billListToolbar" class="toolbar" cmd="void">
-        <input id="dateInput" type="date"/><input type="button" value="New" cmd="createBill"/>
+    <div class="container">
+        <div id="billListToolbar" class="toolbar" cmd="void">
+            <input id="dateInput" type="date"/><input type="button" value="New" cmd="createBill"/>
+        </div>
+        <div id="billListContainer" class="bill-list-container">
+            <ul id="billList" class="bill-list" cmd="void"></ul>
+        </div>
     </div>
-    <div id="billListContainer" class="bill-list-container">
-        <ul id="billList" class="bill-list" cmd="void"></ul>
-    </div>
-    <div class="bill-form-container">
+    <div id="billFormContainer" class="bill-form-container">
         <div class="bill-form" cmd="void">
             <div class="titlebar">New</div>
             <div class="body">
@@ -68,17 +70,31 @@
             bill = list[l];
     %>
         <li class="bill-item" id="bill-item-<%=bill.id%>">
-            <div class="money"><span class="sign">￥</span><span class="amount"><%=bill.amount%></span>
+            <div class="money">
+                <span class="sign">￥</span>
+                <span class="amount"><%=bill.amount%></span>
             </div>
-            <div class="date"><span class="sign">@</span><span class="occurred-time"><%=bill.occurredTime%></span>
+            <div class="date">
+                <span class="sign">@</span>
+                <span class="occurred-time"><%=bill.occurredTime%></span>
             </div>
-            <div class="category"><span class="label">Cate</span><span class="content"><%=bill.cate.name%></span>
+            <div class="category">
+                <span class="label">Cate</span>
+                <span class="content"><%=bill.cate.name%></span>
             </div>
+            <% if(bill.tags.length){ %>
             <div class="tags"><span class="label">Tags</span>
-                </span><span class="tags-item"><%=bill.tags%></span>
+                <% for(var t in bill.tags){ %>
+                <span class="tags-item"><%=bill.tags[t].name%></span>
+                <% } %>
             </div>
-            <div class="remark"><span class="label">Desc</span><div class="content"><%=bill.remark%></div>
+            <% } %>
+            <% if(bill.remark){ %>
+            <div class="remark">
+                <span class="label">Desc</span>
+                <span class="content"><%=bill.remark%></span>
             </div>
+            <% } %>
         </li>
     <% } %>
 </script>
@@ -94,5 +110,6 @@
 <script src="js/tallybook.view.js"></script>
 <script src="js/tallybook.model.js"></script>
 <script src="js/tallybook.net.js"></script>
+<script src="js/tallybook.util.js"></script>
 <script src="js/tallybook.start.js"></script>
 

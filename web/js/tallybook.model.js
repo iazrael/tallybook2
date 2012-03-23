@@ -155,6 +155,9 @@
         name: 'CategoryList',
         extend: List
     }, {
+        getParents: function(){
+            return this.filter('parentId', 0);
+        }
     });
 
     var TagList = this.TagList = z.$class({

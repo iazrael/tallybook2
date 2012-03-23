@@ -32,12 +32,18 @@ Z.$package('tally.config', function(z){
      * 每页账单条数
      * @type {Number}
      */
-    this.BILL_ITEMS_PER_PAGE = 10;
+    this.BILL_ITEMS_PER_PAGE = 15;
 
     /**
      * 日期格式
      * @type {String}
      */
     this.DATE_FORMAT = 'yyyy-MM-dd';
+
+    /**
+     * 日期格式的正则
+     * @type {RegExp}
+     */
+    this.DATE_FORMAT_REGEXP = /\d{4}-\d{2}-\d{2}/;
 });
 

@@ -4,7 +4,6 @@
 	require_once('../common.php');
 	require_once('../check-right.php');
 	
-	header('Content-Type: application/json; charset=UTF-8');
 	$json = new Services_JSON();
 	$result = array();
 	$list = array();

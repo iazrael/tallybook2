@@ -18,3 +18,10 @@
 	}
 	
 ?>
+
+<?php
+	//一些初始化
+	error_reporting(E_ERROR | E_WARNING | E_PARSE);
+	header('Content-Type: application/json; charset=UTF-8');
+	session_start();
+?>

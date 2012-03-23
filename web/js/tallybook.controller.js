@@ -38,7 +38,7 @@ Z.$package('tally.controller', [
             billList.addRange(list);
         });
         z.message.on('getBillListFailure', function(response){
-            alert('getBillListFailure ' + response.errorCode);//TODO
+            tally.view.alert('getBillListFailure ' + response.errorCode);//TODO
         });
         z.message.on('getCategoryListSuccess', function(response){
             var result = response.result;
@@ -48,7 +48,7 @@ Z.$package('tally.controller', [
 
         });
         z.message.on('getCategoryListFailure', function(response){
-            alert('getCategoryListFailure ' + response.errorCode);//TODO
+            tally.view.alert('getCategoryListFailure ' + response.errorCode);//TODO
         });
         z.message.on('getTagListSuccess', function(response){
             var result = response.result;
@@ -58,25 +58,27 @@ Z.$package('tally.controller', [
 
         });
         z.message.on('getTagListFailure', function(response){
-            alert('getTagListFailure ' + response.errorCode);//TODO
+            tally.view.alert('getTagListFailure ' + response.errorCode);//TODO
         });
 
         //listen system ready
         z.message.on('systemReady', function(){
-            loadBillList('2012-03-19');
+            loadBillList('2012-03-18');
         });
         
         //statr logic
         var depQueue = new z.util.DependentQueue({
             onPause: function(queue, item){
-                if(confirm(item.id + ' 失败, 是否忽略?')){
-                    queue.next();
-                }else{
-                    queue.stop();
-                }
+                tally.view.confirm(item.id + ' 失败, 是否忽略?', function(result){
+                    if(result){
+                        queue.next();
+                    }else{
+                        queue.stop();
+                    }
+                });
             },
             onStop: function(){
-                alert('加载失败! 请刷新重试!');
+                tally.view.alert('加载失败! 请刷新重试!');
             },
             onFinish: function(){
                 z.message.notify('systemReady');
@@ -123,9 +125,7 @@ Z.$package('tally.controller', [
         if(!page || page < 0){
             page = 1;
         }
-        if(!date){
-            date = z.date.format(new Date(), tally.config.DATE_FORMAT)
-        }
+        date = date || tally.util.getDate();
         var start = (page - 1) * pageCount;
         var data = {
             date: date,
@@ -152,7 +152,11 @@ Z.$package('tally.controller', [
         bill.type = data.type;
         bill.cate = cateList.get(data.categoryId);
         bill.amount = data.amount;
-        bill.tags = data.tags;
+        var tags = [];
+        for(var i in data.tags){
+            tags.push(tagList.get(data.tags[i]));
+        }
+        bill.tags = tags;
         bill.remark = data.remark;
         bill.occurredTime = data.occurredTime;
         return bill;

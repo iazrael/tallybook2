@@ -19,10 +19,17 @@ input, button, select{
 }
 .wrapper{
     position: relative;
+    overflow: hidden;
+
     /* for test */
     width: 320px;
     border-right: 1px dotted #339;
 
+}
+.container{
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
 }
 .toolbar{
     padding: 5px;
@@ -30,12 +37,18 @@ input, button, select{
 
 /******************* bill list ************************************/
 .bill-list{
-    
+    counter-reset: billcounter;
 }
 .bill-item{
-    margin: 5px;
-    list-style: decimal ;
-    margin-left: 25px;
+    margin: 5px 0;
+    padding: 0 5px;
+}
+.bill-item:before{
+    content: counter(billcounter)".";
+    counter-increment: billcounter;
+}
+.bill-item:nth-child(2n){
+    background: #fceacb;
 }
 .bill-item > div{
     display: inline-block;
@@ -68,10 +81,18 @@ input, button, select{
     height: 100%;
     position: absolute;
     left: 0;
-    top: 0;
+    top: 100%;
 
     background: rgba(0, 0, 0, 0.5);
-    display: none;
+
+    -webkit-transition: top .5s ease-out;
+}
+
+.bill-form-container.show{
+    /*TODO blog=>animation-fill-mode: forwards;*/
+    top: 0;
+    -webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.275);
+    
 }
 .bill-form{
     background: #fff;
@@ -81,7 +102,7 @@ input, button, select{
 }
 .bill-form .titlebar{
     text-align: center;
-    background: red;
+    background: #e62e25;
 }
 .bill-form .body{
     padding: 5px;
