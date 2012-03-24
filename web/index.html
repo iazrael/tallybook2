@@ -23,37 +23,24 @@
         <div class="bill-form" cmd="void">
             <div class="titlebar">New</div>
             <div class="body">
-                <div class="date"><span class="sign">@</span><input type="date" required/></div>
+                <div class="date">
+                    <span class="sign">@</span><input id="billFormDate" type="date" required/>
+                </div>
                 <div class="category">
                     <span class="label">Cate</span>
-                    <div class="content">
-                        <div class="cate-row">
-                            <input type="radio" name="cate" checked="checked"/>
-                            <select>
-                                <option value="1">饮食</option>
-                                <option parent="1" value="2">&nbsp;&nbsp;&nbsp;&nbsp;零食/水果</option>
-                                <option parent="1" value="3">&nbsp;&nbsp;&nbsp;&nbsp;工作就餐</option>
-                                <option value="5">日常开支</option>
-                                <option parent="5" value="6">&nbsp;&nbsp;&nbsp;&nbsp;房租物业</option>
-                                <option parent="5" value="7">&nbsp;&nbsp;&nbsp;&nbsp;水电煤气</option>
-                            </select>
-                        </div>
-                        <div class="cate-row">
-                            <input type="radio" name="cate"/>
-                            <select>
-                                <option value="1">饮食</option>
-                                <option parent="1" value="2">&nbsp;&nbsp;&nbsp;&nbsp;零食/水果</option>
-                                <option parent="1" value="3">&nbsp;&nbsp;&nbsp;&nbsp;工作就餐</option>
-                                <option value="5">日常开支</option>
-                                <option parent="5" value="6">&nbsp;&nbsp;&nbsp;&nbsp;房租物业</option>
-                                <option parent="5" value="7">&nbsp;&nbsp;&nbsp;&nbsp;水电煤气</option>
-                            </select>
-                        </div>
-                    </div>
+                    <span class="content">
+                        <input id="billFormCateType" type="checkbox" class="checkbox">
+                        <label for="billFormCateType"><span></span></label>
+                        <select id="billFormCateIn" class="cate-in"></select>
+                        <select id="billFormCateOut" class="cate-out"></select>
+                        <input class="cate-new" type="button" value="New" cmd="newCategory">
+                    </span>
                 </div>
-                <div class="money"><span class="sign">￥</span><input type="number" placeholder="0.00" min="0" required /></div>
-                <div class="tags"><span class="label">Tags</span><input type="text" /></div>
-                <div class="remark"><span class="label">Desc</span><input type="text" /></div>
+                <div class="money">
+                    <span class="sign">￥</span><input id="billFormAmount" type="number" placeholder="0.00" min="0" required />
+                </div>
+                <div class="tags"><span class="label">Tags</span><input /></div>
+                <div class="remark"><span class="label">Desc</span><textarea id="billFormRemark"></textarea></div>
             </div>
             <div class="toolbar">
                 <input type="button" value="Cancel" cmd="cancelBillForm"><input type="button" value="Done" cmd="sureBillForm">
@@ -99,6 +86,22 @@
     <% } %>
 </script>
 
+<script id="cateListTmpl" type="text/plain">
+<% for(var i in list){ 
+    var cate = list[i];
+%>
+    <option value="<%=cate.id%>"><%=cate.name%></option>
+<% if(cate.children.length){ 
+        for(var j in cate.children){ 
+            var child = cate.children[j];
+%>
+        <option parent="<%=child.parentId%>" value="<%=child.id%>">&nbsp;&nbsp;&nbsp;&nbsp;<%=cate.name%></option>
+<%      }
+    } %>
+<% 
+} %>
+
+</script>
 
 <script src="../lib/jquery/jquery-1.6.4.js"></script>
 

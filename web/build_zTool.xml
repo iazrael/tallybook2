@@ -16,6 +16,7 @@
             <path path="${zTool}z.class.js" />
             <path path="${zTool}z.message.js" />
             
+            <path path="${zTool}z.array.js" />
             <path path="${zTool}z.date.js" />
             <path path="${zTool}z.dom.js" />
             <path path="${zTool}z.number.js" />

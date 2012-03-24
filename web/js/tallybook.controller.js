@@ -10,6 +10,22 @@ Z.$package('tally.controller', [
     var tagList;
     var cateList;
     
+    //**************************************************
+    // 对外接口
+    //**************************************************
+
+    this.getTagList = function(){
+        return tagList;
+    }
+
+    this.getBillList = function(){
+        return billList;
+    }
+
+    this.getCategoryList = function(){
+        return cateList;
+    }
+
     this.init = function(){
         billList = new tally.model.BillList();
         tagList = new tally.model.TagList();
@@ -17,15 +33,9 @@ Z.$package('tally.controller', [
 
         //listen model event to change view
         z.message.on(billList, 'add', function(data){
-            tally.view.billList.add([data.item]);
-        });
-        z.message.on(billList, 'addRange', function(data){
             tally.view.billList.add(data.items);
         });
         z.message.on(billList, 'remove', function(data){
-            tally.view.billList.remove([data.item]);
-        });
-        z.message.on(billList, 'removeRange', function(data){
             tally.view.billList.remove(data.items);
         });
         z.message.on(billList, 'clear', function(data){
@@ -63,6 +73,9 @@ Z.$package('tally.controller', [
 
         //listen system ready
         z.message.on('systemReady', function(){
+            
+            tally.view.render();
+
             loadBillList('2012-03-18');
         });
         

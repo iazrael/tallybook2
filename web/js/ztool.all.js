@@ -13,7 +13,7 @@
     
     var emptyFunction = function(){};
     
-    var isDebuging = 0;
+    var isDebuging = 1;
     
     var debug = isDebuging ? (window.console ? function(data){
         console.debug ? console.debug(data) : console.log(data);
@@ -80,7 +80,7 @@
         debug('initPackage: ' + pack.packageName);
         if(constructor){
             constructor.call(pack, library, require);
-            debug('[[' + pack.packageName + ' inited]]');
+            debug('package [[' + pack.packageName + ' inited]]');
         }
         pack.packageStatus = PACKAGE_STATUS.INITED;
         runDependenceQueue(pack.packageName);
@@ -284,7 +284,14 @@
             throw new Error('the argument isn\'t an object or array');
         }
     }
-    
+
+    /**
+     * @ignore
+     */
+    var _classToString = function(){
+        return this.className;
+    }
+
     /**
 	 * 定义类
 	 * @param {Object} option , 可指定 extend 和 implements, statics
@@ -301,12 +308,14 @@
             prototype = option;
             option = {};
         }
-        if(typeof(prototype.init) !== 'function'){
+        prototype = prototype || {};
+        if(!z.isFunction(prototype.init)){
             // throw new Error('a class must have a "init" method');
            // 没有的 init 方法的时候指定一个空的
            prototype.init = emptyFunction;
         }
         var newClass = function(){
+            z.debug( 'class [' + newClass.className + '] init');
             return this.init.apply(this, arguments);
         };
         var superClass = option.extend;
@@ -318,11 +327,12 @@
             var thisInit = prototype.init;//释放传入 prototype 变量的引用, 以便内存回收
             var superPrototype = duplicate(superClass.prototype);
             delete superPrototype.init;
-            var newPrototype = newClass.prototype = merge({}, superClass.prototype, prototype);
+            newClass.prototype = merge({}, superClass.prototype, prototype);
+            var newPrototype = prototype;
             newClass.prototype.init = function(){
-                this.$static = newClass;//提供更快速的访问 类方法的途径
                 var argus = duplicate(arguments);
                 superInit.apply(this, argus);
+                this.$static = newClass;//提供更快速的访问类方法的途径
                 argus = duplicate(arguments);
                 thisInit.apply(this, argus);
                 //把父类被重写的方法赋给子类实例
@@ -342,13 +352,15 @@
             var thisInit = prototype.init;
             newClass.prototype = prototype;
             newClass.prototype.init = function(){
-                this.$static = newClass;//提供更快速的访问 类方法的途径
+                this.$static = newClass;//提供更快速的访问类方法的途径
                 var argus = arguments;
                 thisInit.apply(this, argus);
             }
         }
         newClass.type = 'class';
         newClass.className = option.name || 'anonymous';
+        newClass.toString = _classToString;
+
         var impls = option['implements'];
         if(impls){
             var unImplMethods = [], implCheckResult;
@@ -376,6 +388,27 @@
         return false;
     }
     
+    /**
+     * @ignore
+     */
+    var _checkImplements = function(instance){
+        var unImplMethods = [], impl;
+        for(var i in this.methods){
+            impl = instance[this.methods[i]];
+            if(!impl || !z.isFunction(impl)){
+                unImplMethods.push(methods[i]);
+            }
+        }
+        return unImplMethods;
+    }
+
+    /**
+     * @ignore
+     */
+    var _interfaceToString = function(){
+        return this.interfaceName;
+    }
+
 	/**
 	 * 定义接口
 	 **/
@@ -390,16 +423,7 @@
         newInterface.type = 'interface'
         newInterface.interfaceName = option.name || 'anonymous';
         newInterface.methods = methods;
-        newInterface.checkImplements = function(instance){
-            var unImplMethods = [], impl;
-            for(var i in methods){
-                impl = instance[methods[i]];
-                if(!impl || typeof(impl) !== 'function'){
-                    unImplMethods.push(methods[i]);
-                }
-            }
-            return unImplMethods;
-        }
+        newInterface.checkImplements = _checkImplements;
         return newInterface;
     }
     
@@ -540,6 +564,8 @@
 
     var eventElement;
 
+    var increaseId = 0;
+
     var getEventElement = function() {
         if (!eventElement) {
             eventElement = document.createElement('div');
@@ -549,6 +575,10 @@
             }
         }
         return eventElement;
+    }
+
+    var getListenerId = function(){
+        return +new Date + '' + increaseId++ ;
     }
 
     /**
@@ -562,7 +592,8 @@
         var listener;
         var wrapFunc;
         var element;
-        var liteners;
+        var listeners;
+        var listenerId;
         if(arguments.length < 2){
             throw new Error('addListener arguments not enough');
         }else if (arguments.length === 2) {
@@ -570,15 +601,17 @@
             type = model;
             model = window;
         }
-        if (!model.__liteners) {
-            model.__liteners = {};
+        if (!model.__listeners) {
+            model.__listeners = {};
+            model.__listenerId = getListenerId();
         }
-        liteners = model.__liteners;
-        if (!liteners[type]) {
-            liteners[type] = [];
+        listeners = model.__listeners;
+        listenerId = model.__listenerId;
+        if (!listeners[type]) {
+            listeners[type] = [];
         } else {
-            for (var i in liteners[type]) {
-                listener = liteners[type][i];
+            for (var i in listeners[type]) {
+                listener = listeners[type][i];
                 if (listener.func === func) {
                     return false;
                 }
@@ -589,13 +622,14 @@
             wrapFunc = function(e) {
                 func.apply(window, e.params);
             }
-            element.addEventListener(type, wrapFunc, false);
+            element.addEventListener(listenerId + '-' + type, wrapFunc, false);
         } else {
             wrapFunc = function(e) {
                 e = window.event;
                 //TODO ie8及以下的浏览器后绑定的方法先执行, 导致触发的事件执行顺序倒过来了
                 //没精力去自己实现顺序执行, 先这样吧
-                if (type === e.params[1]) {
+                var lid = e.params.pop();
+                if (type === e.params[1] && lid === listenerId) {
                     func.apply(window, e.params);
                 }
             }
@@ -605,7 +639,7 @@
             func: func,
             wrapFunc: wrapFunc
         };
-        liteners[type].push(listener);
+        listeners[type].push(listener);
         return true;
     }
     /**
@@ -618,6 +652,7 @@
         var listener;
         var element;
         var listeners;
+        var listenerId;
         if(arguments.length < 2){
             throw new Error('removeListener arguments not enough');
         }else if (arguments.length === 2) {
@@ -625,7 +660,8 @@
             type = model;
             model = window;
         }
-        listeners = model.__liteners;
+        listeners = model.__listeners;
+        listenerId = model.__listenerId;
         if (!listeners || !listeners[type]) {
             return false;
         }
@@ -649,7 +685,7 @@
             if (listener.func === func) {
                 listeners[type].slice(i, 1);
                 if (element.removeEventListener) {
-                    element.removeEventListener(type, listener.wrapFunc, false);
+                    element.removeEventListener(listenerId + '-' + type, listener.wrapFunc, false);
                 } else {
                     element.detachEvent(IE_CUSTOM_EVENT, listener.wrapFunc);
                 }
@@ -685,6 +721,7 @@
         var element;
         var event;
         var listeners;
+        var listenerId;
         if (arguments.length === 1) {
             type = model;
             model = window;
@@ -694,7 +731,8 @@
             model = window;
         }
         z.debug('notify message: ' + type);
-        listeners = model.__liteners;
+        listeners = model.__listeners;
+        listenerId = model.__listenerId;
         if (!listeners || !listeners[type]) {
             return false;
         }
@@ -702,12 +740,12 @@
         element = getEventElement();
         if (document.createEvent) {
             event = document.createEvent('Events');
-            event.initEvent(type, false, false);
+            event.initEvent(listenerId + '-' + type, false, false);
             event.params = [message, type];
             element.dispatchEvent(event);
         } else {
             event = document.createEventObject(IE_CUSTOM_EVENT);
-            event.params = [message, type];
+            event.params = [message, type, listenerId];
             element.fireEvent(IE_CUSTOM_EVENT, event);
         }
         return listeners[type].length !== 0;
@@ -718,6 +756,56 @@
     this.removeListener = removeListener;
     this.off = removeListener;
     this.notify = notify;
+});
+
+;Z.$package('Z.array', function(z){
+    
+    /**
+     * 从给定数组移除指定元素, 只删除一个
+     * @param  {Array} arr  
+     * @param  {Object},{String} key or item
+     * @param {Object} value @optional 指定值
+     * @return {Boolean}      找到并移除返回 true
+     */
+    this.remove = function(arr, key, value){
+        var flag = false;
+        if(arguments.length === 2){//两个参数
+            var item = key;
+            var index = arr.indexOf(item);
+            if(index !== -1){
+                arr.splice(index, 1);
+                flag = true;
+            }
+            return flag;
+        }else{
+            for(var i = 0, len = arr.length; i < len; i++){
+                if(arr[i][key] === value){
+                    arr.splice(i, 1);
+                    flag = true;
+                    break;
+                }
+            }
+            return flag;
+        }
+    };
+
+    /**
+     * 根据指定 key 和 value 进行筛选
+     * @param  {Array} arr   
+     * @param  {String} key   
+     * @param  {Object} value 
+     * @return {Array}       
+     */
+    this.filter = function(arr, key, value){
+        var result = [];
+        for(var i in arr){
+            if(arr[i][key] === value){
+                result.push(arr[i]);
+            }
+        }
+        return result;
+    }
+    
 });
 
 ;Z.$package('Z.date', function(z){
@@ -1197,7 +1285,7 @@
     
 });
 
-;Z.$package('Z.util', ['Z.message'], function(z){
+;Z.$package('Z.util', ['Z.message', 'Z.array'], function(z){
     
     /**
      * 通用 collection 类
@@ -1210,6 +1298,26 @@
             this._keyName = option.keyName || 'id';
             this._arr = [];
             this._map = {};
+            this._modifyTime = 0;
+
+            var self = this;
+            function onModify(){
+                self.setModify();
+            }
+
+            z.message.on(this, 'add', onModify);
+            z.message.on(this, 'remove', onModify);
+            z.message.on(this, 'clear', onModify);
+        },
+        /**
+         * 设置一个修改状态位, 每当 collection有了变更, 这个 modifyTime 就会变
+         * 通过对比 modifyTime 的值就能判断出这个 collection 是否被修改了
+         */
+        setModify: function(){
+            this._modifyTime = +new Date();
+        },
+        getModify: function(){
+            return this._modifyTime;
         },
         getByKey: function(key){
             return this._map[key];
@@ -1254,13 +1362,7 @@
             return this._arr.slice(start, end);
         },
         filter: function(key, value){
-            var result = [];
-            for(var i in this._arr){
-                if(this._arr[i][key] == value){
-                    result.push(this._arr[i]);
-                }
-            }
-            return result;
+            return z.array.filter(this._arr, key, value);
         },
         add: function(item, index, noEvent){
             var existItem = this._map[item[this._keyName]];
@@ -1268,14 +1370,15 @@
                 return false;
             }
             this._map[item[this._keyName]] = item;
-            if(typeof(index) == 'undefined'){
+            if(z.isUndefined(index)){
                 this._arr.push(item);
             }else{
                 this._arr.splice(index, 0, item);
             }
+
             if(!noEvent){
                 z.message.notify(this, 'add', {
-                    item: item,
+                    items: [item],
                     index: index
                 });
             }
@@ -1296,14 +1399,14 @@
             if(!newItems.length){
                 return false;
             }
-            if(typeof(index) == 'undefined'){
+            if(z.isUndefined(index)){
                 this._arr = this._arr.concat(newItems);
             }else{
                 var param = [index, 0].concat(newItems);
                 Array.prototype.splice.apply(this._arr, param);
             }
             if(!noEvent){
-                z.message.notify(this, 'addRange', {
+                z.message.notify(this, 'add', {
                     items: newItems,
                     index: index
                 });
@@ -1315,9 +1418,10 @@
             if(item){
                 var index = this.getIndexByKey(key);
                 this._arr.splice(index, 1);
+                delete this._map[key];
                 if(!noEvent){
                     z.message.notify(this, 'remove', {
-                        item: item,
+                        items: [item],
                         index: index,
                         key: key
                     });
@@ -1330,10 +1434,10 @@
             var item = this._arr[index];
             if(item){
                 this._arr.splice(index, 1);
-                this._map[item[this._keyName]] = null;
+                delete this._map[item[this._keyName]];
                 if(!noEvent){
                     z.message.notify(this, 'remove', {
-                        item: item,
+                        items: [item],
                         index: index,
                         key: item[this._keyName]
                     });
@@ -1366,7 +1470,7 @@
                 return false;
             }
             if(!noEvent){
-                z.message.notify(this, 'removeRange', {
+                z.message.notify(this, 'remove', {
                     items: removedItems
                 });
             }

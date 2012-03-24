@@ -9,6 +9,10 @@ function(z){
         this.billForm.init();
     }
 
+    this.render = function(){
+
+    }
+
     this.alert = function(msg){
         if(!z.isString(msg)){
             msg = JSON.stringify(msg);
@@ -59,7 +63,7 @@ Z.$package('tally.view.billList', function(z){
         $billList;
     
     var removeBill = function(billId){
-        $billList.remove('#bill-item-' + billId);
+        $('#bill-item-' + billId).remove();
     }
 
     this.init = function(){
@@ -91,7 +95,11 @@ Z.$package('tally.view.billList', function(z){
 Z.$package('tally.view.billForm', function(z){
     var packageContext = this;
 
-    var $billFormContainer;
+    var $billFormContainer,
+        $billFormDate,
+        $billFormCateIn,
+        $billFormCateOut
+        ;
 
     this.init = function(){
         $billFormContainer = $('#billFormContainer');
@@ -107,6 +115,17 @@ Z.$package('tally.view.billForm', function(z){
         });
     }
 
+    this.render = function(){
+        $billFormDate = $('#billFormDate');
+        $billFormCateIn = $('#billFormCateIn');
+        $billFormCateOut = $('#billFormCateOut');
+
+        var cateList = tally.controller.getCategoryList();
+
+        z.dom.render($billFormCateIn.get(0), 'cateListTmpl', { list: cateList.getInCates() });
+        z.dom.render($billFormCateOut.get(0), 'cateListTmpl', { list: cateList.getOutCates() });
+    }
+
     this.show = function(){
         $billFormContainer.addClass('show');
     }
@@ -116,6 +135,7 @@ Z.$package('tally.view.billForm', function(z){
     }
 
     this.newBill = function(data){
+        $billFormDate.val(data.occurredTime);
         this.show();
     }
 });

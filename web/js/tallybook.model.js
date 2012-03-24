@@ -82,6 +82,9 @@
             option = option || {};
             this.id = 0;
             this.name = '';
+            this.type = -1;
+            this.parentId = 0;
+            this.index = 0;
             this.children = [];
             this.setters([
                 'name'
@@ -155,8 +158,32 @@
         name: 'CategoryList',
         extend: List
     }, {
+        init: function(){
+            this._lastModifyTime = this.getModify();
+        },
         getParents: function(){
-            return this.filter('parentId', 0);
+            if(this._parents && this._lastModifyTime === this.getModify()){
+                return this._parents;
+            }else{
+                this._lastModifyTime === this.getModify();
+                return this._parents = this.filter('parentId', 0);
+            }
+        },
+        getInCates: function(){
+            if(this._inCates && this._lastModifyTime === this.getModify()){
+                return this._inCates;
+            }else{
+                this._lastModifyTime === this.getModify();
+                return this._inCates = z.array.filter(this.getParents(), 'type', 1);
+            }
+        },
+        getOutCates: function(){
+            if(this._outCates && this._lastModifyTime === this.getModify()){
+                return this._outCates;
+            }else{
+                this._lastModifyTime === this.getModify();
+                return this._outCates = z.array.filter(this.getParents(), 'type', 0);
+            }
         }
     });
 

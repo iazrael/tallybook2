@@ -84,7 +84,6 @@ input, button, select{
     top: 100%;
 
     background: rgba(0, 0, 0, 0.5);
-
     -webkit-transition: top .5s ease-out;
 }
 
@@ -121,6 +120,58 @@ input, button, select{
 }
 .bill-form .category .label{
     vertical-align: middle;
+}
+.bill-form .cate-new{
+    
+}
+.bill-form .checkbox{
+    display: none;
+}
+.bill-form .checkbox + label{
+    width: 24px;
+    height: 12px;
+    display: inline-block;
+    border: 1px solid #959595;
+    margin: 3px;
+    vertical-align: middle;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.bill-form .checkbox + label span{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+
+    background: -webkit-linear-gradient(top, #5071F5, #0E38E7);
+    -webkit-transition: left 0.1s;
+    border-radius: 3px 0 0 3px;
+}
+.bill-form .checkbox ~ select{
+    display: none;
+}
+.bill-form .checkbox ~ .cate-out{
+    display: inline-block;
+}
+.bill-form .checkbox:checked + label span{
+    left: 50%;
+    border-radius: 0 3px 3px 0 ;
+}
+.bill-form .checkbox:checked ~ .cate-in{
+    display: inline-block;
+}
+.bill-form .checkbox:checked ~ .cate-out{
+    display: none;
+}
+.bill-form .remark .label{
+    vertical-align: top;
+}
+.bill-form .remark textarea{
+    width: 170px;
+    overflow-y: auto;
 }
 .bill-form .toolbar{
     text-align: right;
