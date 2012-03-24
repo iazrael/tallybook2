@@ -13,7 +13,7 @@
     
     var emptyFunction = function(){};
     
-    var isDebuging = 1;
+    var isDebuging = 0;
     
     var debug = isDebuging ? (window.console ? function(data){
         console.debug ? console.debug(data) : console.log(data);

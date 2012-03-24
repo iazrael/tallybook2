@@ -28,13 +28,13 @@
 			$list = array();
 			if($totalCount){//没有符合条件的记录时，减少一次数据库查询
 				$queryString = "SELECT id, amount, categoryId, remark, occurredTime, type 
-					FROM bill c WHERE occurredTime = '$date' ORDER BY createTime DESC LIMIT $start,$count";
+					FROM bill c WHERE uid = '$uid' AND occurredTime = '$date' ORDER BY createTime DESC LIMIT $start,$count";
 				$qresult = $tbdb->query($queryString);
 				
 				while($row=$tbdb->getarray($qresult)){
 					$billId = $row[id];
 					$tags = array();
-					$queryString = "SELECT tagId FROM bill_tags WHERE billId=$billId";
+					$queryString = "SELECT tagId FROM bill_tags WHERE uid = '$uid' AND billId=$billId";
 					$tagResult = $tbdb->query($queryString);
 					while($tag=$tbdb->getarray($tagResult)){
 						$tags[] = $tag[tagId] + 0;

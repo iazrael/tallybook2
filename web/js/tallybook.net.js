@@ -1,4 +1,5 @@
-Z.$package('tally.net', {
+
+;Z.$package('tally.net', {
     request: 'tally.net.jquery'
 }, function(z, dependences){
     var packageContext = this;
@@ -64,20 +65,26 @@ Z.$package('tally.net', {
     this.getTagList = function(option){
         require(REQUIRE_URLS.GET_TAG_LIST, option);
     };
+
+    //===============================
     
     this.addBill = function(option){
+        option.method = 'post';
         require(REQUIRE_URLS.ADD_BILL, option);
     };
 
     this.deleteBill = function(option){
+        option.method = 'post';
         require(REQUIRE_URLS.DELETE_BILL, option);
     };
 
     this.updateBill = function(option){
+        option.method = 'post';
         require(REQUIRE_URLS.UPDATE_BILL, option);
     };
     
     this.addCategory = function(option){
+        option.method = 'post';
         require(REQUIRE_URLS.ADD_CATEGORY, option);
     }
     
@@ -85,7 +92,7 @@ Z.$package('tally.net', {
 /**
  * 网络层的jquery实现
  */
-Z.$package('tally.net.jquery', function(z){
+;Z.$package('tally.net.jquery', function(z){
     //TODO 计划着把jq移除, 我需要jq的什么呢?
     var requestCache = {};
     
@@ -119,13 +126,13 @@ Z.$package('tally.net.jquery', function(z){
     };
     
     this.require = function(url, option){
-        var method = option.method || 'GET';
+        var method = option.method || 'get';
         var context = option.context || window;
         var success = option.success;
         var argument = option.argument || {};
         var cacheTime = option.cacheTime;
         var wrapCallback;
-        if(method === 'GET' && cacheTime){//check cache
+        if(method === 'get' && cacheTime){//check cache
             var requireUrl = getRequireUrl(url, option.data);
             var cacheData = getCacheData(requireUrl, cacheTime);
             if(cacheData){//use the cache

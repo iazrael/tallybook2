@@ -1,14 +1,17 @@
 
 
-Z.$package('tally.controller', [
+;Z.$package('tally.controller', [
     'tally.model',
     'tally.net',
     'tally.view'
 ], function(z){
     
+    var packageContext = this;
+
     var billList;
     var tagList;
     var cateList;
+    var currentDate;
     
     //**************************************************
     // 对外接口
@@ -24,6 +27,27 @@ Z.$package('tally.controller', [
 
     this.getCategoryList = function(){
         return cateList;
+    }
+
+    this.setCurrentDate = function(date){
+        currentDate = date;
+    }
+
+    /**
+     * 清空 billList 跳转到指定日期的账单
+     * @param  {String} date 
+     * 
+     */
+    this.jumpToDate = function(date){
+        billList.clear();
+    }
+
+    this.addBill = function(data){
+        tally.view.showLoading();
+        tally.net.addBill({
+            data: data
+        });
+
     }
 
     this.init = function(){
@@ -42,12 +66,19 @@ Z.$package('tally.controller', [
             tally.view.billList.removeAll();
         });
 
+        var firstLoadBillList = true;
         //listen model event to change model
         z.message.on('getBillListSuccess', function(response){
             var list = parseBills(response.result.list);
             billList.addRange(list);
+            tally.view.hideLoading();
+            if(firstLoadBillList){
+                firstLoadBillList = false;
+                tally.view.hideMasker();
+            }
         });
         z.message.on('getBillListFailure', function(response){
+            tally.view.hideLoading();
             tally.view.alert('getBillListFailure ' + response.errorCode);//TODO
         });
         z.message.on('getCategoryListSuccess', function(response){
@@ -55,7 +86,6 @@ Z.$package('tally.controller', [
             var list = parseCategorys(result.list);
             cateList.clear();
             cateList.addRange(list);
-
         });
         z.message.on('getCategoryListFailure', function(response){
             tally.view.alert('getCategoryListFailure ' + response.errorCode);//TODO
@@ -70,13 +100,24 @@ Z.$package('tally.controller', [
         z.message.on('getTagListFailure', function(response){
             tally.view.alert('getTagListFailure ' + response.errorCode);//TODO
         });
-
-        //listen system ready
-        z.message.on('systemReady', function(){
+        z.message.on('addBillSuccess', function(response){
+            tally.view.hideLoading();
+            tally.view.billForm.hide();
+            var bill = parseBill(response.result.data);
+            if(bill.occurredTime === currentDate){
+                billList.add(bill, 0);
+            }else{
+                tally.view.confirm('是否转到 ' + bill.occurredTime + ' 的账单记录?', function(result){
+                    if(result){
+                        tally.view.jumpToDate(bill.occurredTime);
+                    }
+                });
+            }
             
-            tally.view.render();
-
-            loadBillList('2012-03-18');
+        });
+        z.message.on('addBillFailure', function(response){
+            tally.view.hideLoading();
+            tally.view.alert('addBillFailure ' + response.errorCode);//TODO
         });
         
         //statr logic
@@ -133,7 +174,8 @@ Z.$package('tally.controller', [
     //**************************************************
     // net require
     //**************************************************
-    var loadBillList = function(date, page, pageCount){
+    var loadBillList = this.loadBillList = function(date, page, pageCount){
+        tally.view.showLoading();
         pageCount = pageCount || tally.config.BILL_ITEMS_PER_PAGE;
         if(!page || page < 0){
             page = 1;

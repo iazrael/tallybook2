@@ -13,18 +13,24 @@
 <div class="wrapper">
     <div class="container">
         <div id="billListToolbar" class="toolbar" cmd="void">
-            <input id="dateInput" type="date"/><input type="button" value="New" cmd="createBill"/>
+            <input id="dateInput" type="date" required pattern="\d{4}-\d{2}-\d{2}" placeholder="2012-12-20"/><input type="button" value="New" cmd="createBill"/>
         </div>
         <div id="billListContainer" class="bill-list-container">
             <ul id="billList" class="bill-list" cmd="void"></ul>
         </div>
     </div>
+    <div id="globalMasker" class="global-masker"></div>
     <div id="billFormContainer" class="bill-form-container">
-        <div class="bill-form" cmd="void">
+    </div>
+    <div id="globalLoading" class="global-loading"></div>
+</div>
+
+<script id="billFormTmpl" type="text/plain">
+    <form class="bill-form" cmd="void" action="">
             <div class="titlebar">New</div>
             <div class="body">
                 <div class="date">
-                    <span class="sign">@</span><input id="billFormDate" type="date" required/>
+                    <span class="sign">@</span><input id="billFormDate" type="date" required pattern="\\d{4}-\\d{2}-\\d{2}" placeholder="2012-12-20"/>
                 </div>
                 <div class="category">
                     <span class="label">Cate</span>
@@ -37,18 +43,16 @@
                     </span>
                 </div>
                 <div class="money">
-                    <span class="sign">￥</span><input id="billFormAmount" type="number" placeholder="0.00" min="0" required />
+                    <span class="sign">￥</span><input id="billFormAmount" type="number" placeholder="0.00" min="0" required/>
                 </div>
                 <div class="tags"><span class="label">Tags</span><input /></div>
-                <div class="remark"><span class="label">Desc</span><textarea id="billFormRemark"></textarea></div>
+                <div class="remark"><span class="label">Desc</span><textarea id="billFormRemark" placeholder="some text" ></textarea></div>
             </div>
             <div class="toolbar">
-                <input type="button" value="Cancel" cmd="cancelBillForm"><input type="button" value="Done" cmd="sureBillForm">
+                <input type="button" value="Cancel" cmd="cancelBillForm"><input type="submit" value="Done" >
             </div>
-        </div>
-    </div>
-</div>
-    
+        </form>
+</script>
 
 <script id="billItemTmpl" type="text/plain">
     <% 
@@ -95,7 +99,7 @@
         for(var j in cate.children){ 
             var child = cate.children[j];
 %>
-        <option parent="<%=child.parentId%>" value="<%=child.id%>">&nbsp;&nbsp;&nbsp;&nbsp;<%=cate.name%></option>
+        <option parent="<%=child.parentId%>" value="<%=child.id%>">&nbsp;&nbsp;&nbsp;&nbsp;<%=child.name%></option>
 <%      }
     } %>
 <% 

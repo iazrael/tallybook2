@@ -1,5 +1,5 @@
 
-Z.$package('tally.config', function(z){
+;Z.$package('tally.config', function(z){
 
     
     /**

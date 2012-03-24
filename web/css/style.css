@@ -1,6 +1,7 @@
 html, body{
 	margin: 0;
 	padding: 0;
+    height: 100%;
 }
 ul, li{
 	margin: 0;
@@ -17,14 +18,15 @@ body, input, button, textarea, select{
 input, button, select{
     vertical-align: middle;
 }
+
 .wrapper{
     position: relative;
     overflow: hidden;
+    height: 100%;
 
     /* for test */
     width: 320px;
     border-right: 1px dotted #339;
-
 }
 .container{
     overflow-x: hidden;
@@ -34,7 +36,32 @@ input, button, select{
 .toolbar{
     padding: 5px;
 }
-
+.global-masker{
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.global-loading{
+    background: url(../images/loading2.gif);
+    width: 110px;
+    height: 64px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -32px 0 0 -55px;
+}
+.list-loading{
+    background: url(../images/loading1.gif);
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -8px;
+}
 /******************* bill list ************************************/
 .bill-list{
     counter-reset: billcounter;
@@ -78,13 +105,14 @@ input, button, select{
 /*************** bill form ************************************/
 .bill-form-container{
     width: 100%;
-    height: 100%;
+    height: 200%;
     position: absolute;
     left: 0;
     top: 100%;
 
     background: rgba(0, 0, 0, 0.5);
     -webkit-transition: top .5s ease-out;
+    display: none;
 }
 
 .bill-form-container.show{
@@ -122,7 +150,7 @@ input, button, select{
     vertical-align: middle;
 }
 .bill-form .cate-new{
-    
+
 }
 .bill-form .checkbox{
     display: none;
@@ -134,7 +162,7 @@ input, button, select{
     border: 1px solid #959595;
     margin: 3px;
     vertical-align: middle;
-    border-radius: 5px;
+    border-radius: 4px;
     overflow: hidden;
     position: relative;
 }
@@ -148,7 +176,7 @@ input, button, select{
 
     background: -webkit-linear-gradient(top, #5071F5, #0E38E7);
     -webkit-transition: left 0.1s;
-    border-radius: 3px 0 0 3px;
+    border-radius: 2px 0 0 2px;
 }
 .bill-form .checkbox ~ select{
     display: none;
@@ -158,7 +186,7 @@ input, button, select{
 }
 .bill-form .checkbox:checked + label span{
     left: 50%;
-    border-radius: 0 3px 3px 0 ;
+    border-radius: 0 2px 2px 0 ;
 }
 .bill-form .checkbox:checked ~ .cate-in{
     display: inline-block;

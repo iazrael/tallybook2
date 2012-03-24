@@ -1,16 +1,27 @@
-Z.$package('tally.view', [
+
+;Z.$package('tally.view', [
     'tally.view.billList'
 ],
 function(z){
     
+    var $globalMasker;
+    var $globalLoading;
+
     this.init = function(){
-        this.toolbar.init();
-        this.billList.init();
-        this.billForm.init();
-    }
 
-    this.render = function(){
+        $globalMasker = $('#globalMasker');
+        $globalLoading = $('#globalLoading');
 
+        var self = this;
+        //listen system ready
+        z.message.on('systemReady', function(){
+            self.toolbar.init();
+            self.billList.init();
+            self.billForm.init();
+
+            tally.controller.loadBillList('2012-03-18');
+
+        });
     }
 
     this.alert = function(msg){
@@ -27,9 +38,25 @@ function(z){
         }
         callback(result);
     }
+
+    this.showMasker = function(){
+        $globalMasker.show();
+    }
+
+    this.hideMasker = function(){
+        $globalMasker.hide();
+    }
+
+    this.showLoading = function(){
+        $globalLoading.show();
+    }
+
+    this.hideLoading = function(){
+        $globalLoading.hide();
+    }
 });
 
-Z.$package('tally.view.toolbar', function(z){
+;Z.$package('tally.view.toolbar', function(z){
     
     var $dateInput;
     var $billListToolbar;
@@ -39,11 +66,19 @@ Z.$package('tally.view.toolbar', function(z){
         $dateInput.val(tally.util.getDate());
 
         $billListToolbar = $('#billListToolbar');
+
+        $billListToolbar.change(function(e){
+            tally.controller.setCurrentDate($billListToolbar.val());
+        });
+
         z.dom.bindCommends($billListToolbar.get(0), {
             createBill: function(param, element, event){
                 //验证时间是否有效什么的
                 var dateStr = $dateInput.val();
-                if(!tally.util.verifyDate(dateStr)){
+                if(dateStr === ''){
+                    tally.view.alert('请输入日期!');
+                    return;
+                }else if(!tally.util.verifyDate(dateStr)){
                     tally.view.alert('日期格式不正确!');
                     return;
                 }
@@ -56,7 +91,7 @@ Z.$package('tally.view.toolbar', function(z){
     }
 });
 
-Z.$package('tally.view.billList', function(z){
+;Z.$package('tally.view.billList', function(z){
     
     
     var $billListContainer,
@@ -92,38 +127,47 @@ Z.$package('tally.view.billList', function(z){
     
 });
 
-Z.$package('tally.view.billForm', function(z){
+;Z.$package('tally.view.billForm', function(z){
     var packageContext = this;
 
     var $billFormContainer,
         $billFormDate,
         $billFormCateIn,
-        $billFormCateOut
+        $billFormCateOut,
+        $billFormRemark,
+        $billFormCateType,
+        $billFormAmount
         ;
 
     this.init = function(){
         $billFormContainer = $('#billFormContainer');
-        // z.dom.render($billFormContainer.get(0), 'billFormTmpl', {});
+        z.dom.render($billFormContainer.get(0), 'billFormTmpl', {});
         
-        z.dom.bindCommends($billFormContainer.get(0), {
-            cancelBillForm: function(param, element, event){
-                packageContext.hide();
-            },
-            sureBillForm: function(param, element, event){
-                // packageContext.hide();
-            }
-        });
-    }
-
-    this.render = function(){
         $billFormDate = $('#billFormDate');
         $billFormCateIn = $('#billFormCateIn');
         $billFormCateOut = $('#billFormCateOut');
+        $billFormRemark = $('#billFormRemark');
+        $billFormCateType = $('#billFormCateType');
+        $billFormAmount = $('#billFormAmount');
 
         var cateList = tally.controller.getCategoryList();
 
         z.dom.render($billFormCateIn.get(0), 'cateListTmpl', { list: cateList.getInCates() });
         z.dom.render($billFormCateOut.get(0), 'cateListTmpl', { list: cateList.getOutCates() });
+
+        z.dom.bindCommends($billFormContainer.get(0), {
+            cancelBillForm: function(param, element, event){
+                packageContext.hide();
+            }
+        });
+
+        $billFormContainer.submit(function(e){
+            e.preventDefault();
+            var data = getFormData();
+            tally.controller.addBill(data);
+        });
+
+        $billFormContainer.show();
     }
 
     this.show = function(){
@@ -138,5 +182,27 @@ Z.$package('tally.view.billForm', function(z){
         $billFormDate.val(data.occurredTime);
         this.show();
     }
+
+    //=========
+    // 内部方法
+    //=========
+    var getFormData = function(){
+        var data = {
+            occurredTime: $billFormDate.val(),
+            amount: $billFormAmount.val(),
+            remark: $billFormRemark.val()
+        };
+        if($billFormCateType.prop('checked')){
+            //收入
+            data.type = 1;
+            data.categoryId = $billFormCateIn.val();
+        }else{
+            //支出
+            data.type = 0;
+            data.categoryId = $billFormCateOut.val();
+        }
+        return data;
+    }
+    
 });
 
