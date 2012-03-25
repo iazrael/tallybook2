@@ -12,6 +12,7 @@
     var tagList;
     var cateList;
     var currentDate;
+    var currentPage = 1;
     
     //**************************************************
     // 对外接口
@@ -29,17 +30,18 @@
         return cateList;
     }
 
-    this.setCurrentDate = function(date){
-        currentDate = date;
-    }
 
     /**
      * 清空 billList 跳转到指定日期的账单
-     * @param  {String} date 
+     * @param  {String} dateStr 
      * 
      */
-    this.jumpToDate = function(date){
+    this.jumpToDate = function(dateStr){
+        currentDate = dateStr;
+        currentPage = 1;
         billList.clear();
+        tally.view.showLoading();
+        loadBillList(dateStr);
     }
 
     this.addBill = function(data){
@@ -55,9 +57,32 @@
         tagList = new tally.model.TagList();
         cateList = new tally.model.CategoryList();
 
+        initEvents();
+        
+        run();
+
+    }
+
+    var initEvents = function(){
+
+        z.message.on('viewReady', function(){
+            // tally.view.toolbar.setDate(tally.util.getDate());
+            tally.view.jumpToDate('2012-03-18');
+        });
+
+        z.message.on(tally.view, 'dateChange', function(dateStr){
+            packageContext.jumpToDate(dateStr);
+        });
+
+        z.message.on(tally.view, 'loadBills', function(){
+            tally.view.showLoading();
+            currentPage++;
+            loadBillList(currentDate, currentPage);
+        });
+
         //listen model event to change view
         z.message.on(billList, 'add', function(data){
-            tally.view.billList.add(data.items);
+            tally.view.billList.add(data.items, data.index);
         });
         z.message.on(billList, 'remove', function(data){
             tally.view.billList.remove(data.items);
@@ -66,16 +91,11 @@
             tally.view.billList.removeAll();
         });
 
-        var firstLoadBillList = true;
         //listen model event to change model
         z.message.on('getBillListSuccess', function(response){
             var list = parseBills(response.result.list);
             billList.addRange(list);
             tally.view.hideLoading();
-            if(firstLoadBillList){
-                firstLoadBillList = false;
-                tally.view.hideMasker();
-            }
         });
         z.message.on('getBillListFailure', function(response){
             tally.view.hideLoading();
@@ -119,7 +139,10 @@
             tally.view.hideLoading();
             tally.view.alert('addBillFailure ' + response.errorCode);//TODO
         });
-        
+    }
+
+    // system run
+    var run = function(){
         //statr logic
         var depQueue = new z.util.DependentQueue({
             onPause: function(queue, item){
@@ -171,11 +194,11 @@
         //run it
         depQueue.run();
     }
+
     //**************************************************
     // net require
     //**************************************************
-    var loadBillList = this.loadBillList = function(date, page, pageCount){
-        tally.view.showLoading();
+    var loadBillList = function(date, page, pageCount){
         pageCount = pageCount || tally.config.BILL_ITEMS_PER_PAGE;
         if(!page || page < 0){
             page = 1;

@@ -22,6 +22,8 @@
             <path path="${zTool}z.number.js" />
             <path path="${zTool}z.string.js" />
 
+            <path path="${zTool}z.ui.ScrollAction.js" />
+
             <path path="${zTool}z.util.Beater.js" />            
             <path path="${zTool}z.util.Collection.js" />            
             <path path="${zTool}z.util.DependentQueue.js" />            

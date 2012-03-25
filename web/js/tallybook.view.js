@@ -19,7 +19,9 @@ function(z){
             self.billList.init();
             self.billForm.init();
 
-            tally.controller.loadBillList('2012-03-18');
+            tally.view.hideLoading();
+            tally.view.hideMasker();    
+            z.message.notify('viewReady');
 
         });
     }
@@ -54,6 +56,10 @@ function(z){
     this.hideLoading = function(){
         $globalLoading.hide();
     }
+
+    this.jumpToDate = function(dateStr){
+        this.toolbar.setDate(dateStr);
+    }
 });
 
 ;Z.$package('tally.view.toolbar', function(z){
@@ -61,25 +67,29 @@ function(z){
     var $dateInput;
     var $billListToolbar;
 
-    this.init = function(){
-        $dateInput = $('#dateInput');
-        $dateInput.val(tally.util.getDate());
+    this.setDate = function(dateStr){
+        $dateInput.val(dateStr);
+        z.message.notify(tally.view, 'dateChange', dateStr);
+    }
 
+    this.init = function(){
         $billListToolbar = $('#billListToolbar');
 
-        $billListToolbar.change(function(e){
-            tally.controller.setCurrentDate($billListToolbar.val());
+        $dateInput = $('#dateInput');
+
+        $dateInput.change(function(e){
+            var dateStr = $dateInput.val();
+            if(!checkeDate(dateStr)){
+                return;
+            }
+            z.message.notify(tally.view, 'dateChange', dateStr);
         });
 
         z.dom.bindCommends($billListToolbar.get(0), {
             createBill: function(param, element, event){
                 //验证时间是否有效什么的
                 var dateStr = $dateInput.val();
-                if(dateStr === ''){
-                    tally.view.alert('请输入日期!');
-                    return;
-                }else if(!tally.util.verifyDate(dateStr)){
-                    tally.view.alert('日期格式不正确!');
+                if(!checkeDate(dateStr)){
                     return;
                 }
                 var data = {
@@ -89,25 +99,48 @@ function(z){
             }
         });
     }
+
+    var checkeDate = function(dateStr){
+        if(dateStr === ''){
+            tally.view.alert('请输入日期!');
+            return false;
+        }else if(!tally.util.verifyDate(dateStr)){
+            tally.view.alert('日期格式不正确!');
+            return false;
+        }
+        return true;
+    }
+
 });
 
 ;Z.$package('tally.view.billList', function(z){
     
     
-    var $billListContainer,
+    var $container,
+        $billListContainer,
         $billList;
+
+    var scrollAction;
     
     var removeBill = function(billId){
         $('#bill-item-' + billId).remove();
     }
 
     this.init = function(){
+        $container = $('#container');
         $billListContainer = $('#billListContainer');
         $billList = $('#billList');
+
+        scrollAction = new z.ui.ScrollAction({
+            element: $container.get(0),
+            onScrollToBottom: function(){
+                z.message.notify(tally.view, 'loadBills');
+            }
+        });
     }
     
-    this.add = function(bills){
-        z.dom.render($billList.get(0), 'billItemTmpl', {list: bills}, true);
+    this.add = function(bills, index){
+        z.dom.render($billList.get(0), 'billItemTmpl', {list: bills}, index);
     }
 
     this.remove = function(bills){

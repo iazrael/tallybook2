@@ -699,7 +699,7 @@
      * 向消息的监听者广播一条消息
      * @param {Object} model 消息的挂载目标, 可选, 默认为 window
      * @param {String} type ,消息类型
-     * @param {Object} message, 消息体
+     * @param {Object} message, 消息体, 可选
      * @example
      * var func1 = function(type, message){
             console.log('help!!!!! don\t kill me ..... call 110.');
@@ -715,6 +715,8 @@
         
         //notify it
         z.message.notify('kill')
+        //or 
+        z.message.notify(window, 'kill')
      *
      */
     var notify = function(model, type, message) {
@@ -725,7 +727,7 @@
         if (arguments.length === 1) {
             type = model;
             model = window;
-        }else if (arguments.length === 2) {
+        }else if (arguments.length === 2 && z.isString(model)) {
             message = type;
             type = model;
             model = window;
@@ -908,17 +910,17 @@
     
     /**
      *  @param {HTMLElement},{String} targetId, target dom or dom id
-     *  @param {String} tmplId, template dom id
+     *  @param {String} tmplId template dom id
      *  @param {Object} data
-     *  @param {Boolean} isPlus, add or replace
+     *  @param {Number} position @optional the index to insert, -1 to plus to last
      */
-    this.render = function(target, tmplId, data, isPlus){
+    this.render = function(target, tmplId, data, position){
         var tabTmpl = this.getTemplate(tmplId);
         var html = z.string.template(tabTmpl, data);
         if(typeof target === 'string'){
             target = this.get(target);
         }
-        if(isPlus && target.childElementCount){
+        if(!z.isUndefined(position) && target.childElementCount){
             var tempNode = document.createElement('div');
             tempNode.innerHTML = html;
             var nodes = tempNode.children;
@@ -926,7 +928,11 @@
             while(nodes[0]){
                 fragment.appendChild(nodes[0]);
             }
-            target.appendChild(fragment);
+            if(position === -1 || position >= target.childElementCount - 1){
+                target.appendChild(fragment);
+            }else{
+                target.insertBefore(fragment, target.children[position]);
+            }
             delete tempNode;
         }else{
             target.innerHTML = html;
@@ -1169,7 +1175,143 @@
         return str;
     }
 });
-/**
+
+;Z.$package('Z.ui', function(z){
+
+    /**
+     * 滚动条的通用逻辑封装
+     *
+     */
+    this.ScrollAction = z.define('class', {
+        init: function(option){
+            this._id = 'scroll_action_' + (option.id || option.element.getAttribute('id'));
+            this._el = option.element;
+            
+            this._step = option.step || 50;
+            this._animationDuration = option.animationDuration || 10;
+            this._scrollEventDelay = option.scrollEventDelay || 200; 
+            
+            this._onScrollToBottom = option.onScrollToBottom;
+            this._onScrollToTop = option.onScrollToTop;
+            this._onAnimationStart = option.onAnimationStart;
+            this._onAnimationEnd = option.onAnimationEnd;
+            
+            
+            var context = this;
+            this._el.addEventListener('scroll', function(e){
+                //保证这个延迟的时间比动画长, 不能在下一个动画还没执行, 这里已经触发了
+                var delayTime = context._scrollEventDelay + context._animationDuration;
+                z.util.delay(context._id + '_scroll', delayTime, function(){
+                    if(context._noScollEvent){
+                        context._noScollEvent = false;
+                        return;
+                    }
+                    if(context.isTop() && context._onScrollToTop){
+                        context._onScrollToTop();
+                    }else if(context.isBottom() && context._onScrollToBottom){
+                        context._onScrollToBottom();
+                    }
+                });
+            },false);
+        },
+        /**
+         * 获取当前滚动条的位置
+         */
+        getScrollTop: function(){
+            return this._el.scrollTop;
+        },
+        /**
+         * 判断滚动条是否已经在顶部了
+         * @return {Boolean} 
+         */
+        isTop: function(){
+            return this._el.scrollTop === 0;
+        },
+        /**
+         * 判断是否滚动条已经到底部了
+         * @return {Boolean} 
+         */
+        isBottom: function(){
+            return this._el.scrollTop === this._el.scrollHeight - this._el.clientHeight;
+        },
+        /**
+         * 设置动画的参数
+         * @param {Number} step 每次动画滚动的步长
+         * @param {Number} duration 每次滚动执行的间隔
+         */
+        setAnimation: function(step, duration){
+            if(step){
+                this._step = step;
+            }
+            if(duration){
+                this._animationDuration = duration;
+            }
+        },
+        /**
+         * 滚动到指定位置
+         * @param {Number},{String} scrollTop 指定scrollTop, 或者关键字 'top'/'bottom'
+         * @param {Boolean} hasAnimation 指示是否执行滚动动画
+         * @param {Boolean} noScollEvent 指示改行为是否不要出发 scrollEvent
+         * @example
+         * 1.scrollAction.scrollTo(0);
+         * 2.scrollAction.scrollTo(200);
+         * 3.scrollAction.scrollTo('top', true);
+         * 4.scrollAction.scrollTo('bottom');
+         * 
+         */
+        scrollTo: function(scrollTop, hasAnimation, noScollEvent){
+            var context = this;
+            z.util.clearLoop(this._id);
+            var maxScrollHeight = this._el.scrollHeight - this._el.clientHeight;
+            if(J.isString(scrollTop)){
+                if(scrollTop === 'top'){
+                    scrollTop = 0;
+                }
+                if(scrollTop === 'bottom'){
+                    scrollTop = maxScrollHeight;
+                }
+            }
+            if(scrollTop < 0){
+                scrollTop = 0;
+            }
+            if(scrollTop > maxScrollHeight){
+                scrollTop = maxScrollHeight;
+            }
+            if(scrollTop === this._el.scrollTop){
+                return false;
+            }
+            this._noScollEvent = noScollEvent;
+            if(!hasAnimation){
+                this._el.scrollTop = scrollTop;
+            }else{
+                var from = context._el.scrollTop, to = scrollTop;
+                var sign = (to - from > 0) ? 1 : -1;
+                var isStarted = false;
+                z.util.loop(this._id, this._animationDuration, function(){
+                    if(!isStarted){
+                        isStarted = true;
+                        if(context._onAnimationStart){
+                            context._onAnimationStart();
+                        }
+                    }
+                    from = from + sign * context._step;
+                    var isEnd = false;
+                    if((sign > 0 && from > to) || (sign < 0 && from < to)){
+                        from = to;
+                        isEnd = true;
+                        z.util.clearLoop(context._id);
+                    }
+                    context._el.scrollTop = from;
+                    if(isEnd && context._onAnimationEnd){
+                        context._onAnimationEnd();
+                    }
+                });
+            }
+            return true;
+        }
+    });
+    
+});/**
  * 节拍器, 节省设置多个setIntervel带来的性能消耗
  * 最长节拍是一分钟
  * 节拍的起点未必完全正确, 节拍越长, 起点的误差会越大
@@ -1371,6 +1513,7 @@
             }
             this._map[item[this._keyName]] = item;
             if(z.isUndefined(index)){
+                index = this._arr.length;
                 this._arr.push(item);
             }else{
                 this._arr.splice(index, 0, item);
@@ -1400,6 +1543,7 @@
                 return false;
             }
             if(z.isUndefined(index)){
+                index = this._arr.length;
                 this._arr = this._arr.concat(newItems);
             }else{
                 var param = [index, 0].concat(newItems);
