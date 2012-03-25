@@ -24,9 +24,9 @@ input, button, select{
     overflow: hidden;
     height: 100%;
 
-    /* for test */
+    /* for test 
     width: 320px;
-    border-right: 1px dotted #339;
+    border-right: 1px dotted #339;*/
 }
 .container{
     overflow-x: hidden;
@@ -35,6 +35,13 @@ input, button, select{
 }
 .toolbar{
     padding: 5px;
+}
+.logo{
+    float: right;
+    width: 51px;
+    height: 31px;
+    background:  url(../images/itally.png) center center;
+    text-indent: -9999em;
 }
 .global-masker{
     background: #fff;
