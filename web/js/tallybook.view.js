@@ -41,6 +41,11 @@ function(z){
         callback(result);
     }
 
+    this.prompt = function(msg, callback){
+        var result = prompt(msg);
+        callback(result);
+    }
+
     this.showMasker = function(){
         $globalMasker.show();
     }

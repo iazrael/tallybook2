@@ -152,6 +152,7 @@
         name: 'BillList',
         extend: List
     }, {
+
     });
 
     var CategoryList = this.CategoryList = z.$class({
@@ -191,6 +192,8 @@
         name: 'TagList',
         extend: List
     }, {
+
     });
+
     
 });

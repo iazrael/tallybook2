@@ -1,6 +1,13 @@
 
 ;Z.$package('tally.config', function(z){
+    /*
+     * 错误码, 1xxx 的是前台错误
+     * 2xxx 的是后台返回的错误
+     */
 
+    this.ERROR_NOT_LOGIN = 1001;
+
+    this.ERROR_NOT_LOGIN_WITH_ACCOUNT = 1002;
     
     /**
      * ajax 服务请求的路径
