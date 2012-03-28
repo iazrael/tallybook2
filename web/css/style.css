@@ -109,41 +109,54 @@ input, button, select{
     display: block;
 }
 
-/*************** bill form ************************************/
-.bill-form-container{
+
+/*************** normal form ************************************/
+.form-container{
     width: 100%;
     height: 200%;
     position: absolute;
     left: 0;
     top: 100%;
-
     background: rgba(0, 0, 0, 0.5);
-    -webkit-transition: top .5s ease-out;
+
     display: none;
+}
+.form{
+    background: #fff;
+    margin: 10px 10px 0;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    /*max-width: 360px;*/
+}
+.form .titlebar{
+    text-align: center;
+    background: #e62e25;
+}
+.form .body{
+    padding: 5px;
+}
+.form .body > div{
+    margin: 5px;
+}
+.form .toolbar{
+    text-align: right;
+}
+/*************** bill form ************************************/
+.bill-form-container{
+    -webkit-transition: top 0.2s ease-out;
 }
 
 .bill-form-container.show{
     /*TODO blog=>animation-fill-mode: forwards;*/
     top: 0;
+    -webkit-transition-duration: 0.5s;
     -webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.275);
     
 }
 .bill-form{
-    background: #fff;
-    margin: 10px 10px 0;
-    border-radius: 5px 5px 0 0;
-    overflow: hidden;
+     
 }
-.bill-form .titlebar{
-    text-align: center;
-    background: #e62e25;
-}
-.bill-form .body{
-    padding: 5px;
-}
-.bill-form .body > div{
-    margin: 5px;
-}
+
 .bill-form .sign, .bill-form .label{
     width: 20%;
     text-align: right;
@@ -209,5 +222,35 @@ input, button, select{
     overflow-y: auto;
 }
 .bill-form .toolbar{
-    text-align: right;
+     
 }
+
+/**************** login form ****************/
+.login-form-container{
+    
+}
+.login-form-container.show{
+    display: block;
+    top: 0;
+}
+.login-form .body label, .login-form .body input, .login-form .body span{
+    display: inline-block;
+    vertical-align: middle;
+}
+.login-form .body label, .login-meta span{
+    width: 20%;
+    margin-right: 10%;
+    text-align: right
+
+}
+.login-form .body input{
+
+}
+.login-form .body .login-meta label{
+    width: auto;
+    margin-right: 0;
+    text-align: left;
+}
+
+
+

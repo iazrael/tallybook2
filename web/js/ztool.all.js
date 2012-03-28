@@ -817,7 +817,7 @@
     /**
      * 设置一个 cookie 
      * @param {String} name 
-     * @param {String} value  
+     * @param {String},{Object} value  
      * @param {String} domain 
      * @param {String} path   
      * @param {Number} hour  
@@ -826,8 +826,12 @@
         if (hour) {
             var today = +new Date;
             var expire = new Date();
-            expire.setTime(today.getTime() + 3600000 * hour);
+            expire.setTime(today + 3600000 * hour);
         }
+        if(!z.isString(value)){
+            value = JSON.stringify(value);
+        }
+        value = window.encodeURIComponent(value);
         window.document.cookie = name + '=' + value + '; ' 
             + (hour ? ('expires=' + expire.toGMTString() + '; ') : '') 
             + (path ? ('path=' + path + '; ') : 'path=/; ') 
@@ -842,7 +846,14 @@
     this.get = function(name) {
         var r = new RegExp('(?:^|;+|\\s+)' + name + '=([^;]*)');
         var m = window.document.cookie.match(r);
-        return (!m ? '' : m[1]);
+        var value = !m ? '' : m[1];
+        value = window.decodeURIComponent(value);
+        try{
+            value = JSON.parse(value);
+        }catch(e){
+
+        }
+        return value;
     }
     
     /**
@@ -852,7 +863,7 @@
      * @param {String} domain
      * @param {String} path 
      */
-    this.remove : function(name, domain, path) {
+    this.remove = function(name, domain, path) {
         window.document.cookie = name + '=; expires=Mon, 26 Jul 1997 05:00:00 GMT; ' 
             + (path ? ('path=' + path + '; ') : 'path=/; ') 
             + (domain ? ('domain=' + domain + ';') : ('domain=' + defaultDomain + ';'));
@@ -965,6 +976,7 @@
      *  @param {Number} position @optional the index to insert, -1 to plus to last
      */
     this.render = function(target, tmplId, data, position){
+        data = data || {};
         var tabTmpl = this.getTemplate(tmplId);
         var html = z.string.template(tabTmpl, data);
         if(typeof target === 'string'){

@@ -66,7 +66,7 @@
         require(REQUIRE_URLS.GET_TAG_LIST, option);
     };
 
-    //===============================
+    //=========== 写操作 ====================
     
     this.addBill = function(option){
         option.method = 'post';
@@ -88,6 +88,15 @@
         require(REQUIRE_URLS.ADD_CATEGORY, option);
     }
     
+
+
+    //========= 账号 =======================
+    
+    this.login = function(option){
+        option.method = 'post';
+        require(REQUIRE_URLS.LOGIN, option);
+    }
+
 });
 /**
  * 网络层的jquery实现

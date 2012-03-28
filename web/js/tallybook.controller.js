@@ -52,6 +52,15 @@
 
     }
 
+    this.handleError = function(errorCode){
+        //TODO
+    }
+
+    this.login = function(param){
+        tally.view.showLoading();
+        tally.net.login(param);
+    }
+
     this.init = function(){
         billList = new tally.model.BillList();
         tagList = new tally.model.TagList();
@@ -63,9 +72,11 @@
 
     }
 
+    //////////////////////////////////
+
     var initEvents = function(){
 
-        z.message.on('viewReady', function(){
+        z.message.on('systemReady', function(){
             // tally.view.toolbar.setDate(tally.util.getDate());
             tally.view.jumpToDate('2012-03-18');
         });
@@ -91,7 +102,7 @@
             tally.view.billList.removeAll();
         });
 
-        //listen model event to change model
+        //listen net event to change model
         z.message.on('getBillListSuccess', function(response){
             var list = parseBills(response.result.list);
             billList.addRange(list);
@@ -154,11 +165,24 @@
                     }
                 });
             },
-            onStop: function(){
+            onStop: function(queue, item){
                 tally.view.alert('加载失败! 请刷新重试!');
             },
             onFinish: function(){
                 z.message.notify('systemReady');
+            }
+        });
+
+        depQueue.add({
+            id: 'login',
+            exec: function(queue, item){
+                tally.account.login(function(result, errorCode){
+                    if(result){
+                        queue.next();
+                    }else{
+                        queue.stop();
+                    }
+                })
             }
         });
 

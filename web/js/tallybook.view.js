@@ -1,8 +1,5 @@
 
-;Z.$package('tally.view', [
-    'tally.view.billList'
-],
-function(z){
+;Z.$package('tally.view', function(z){
     
     var $globalMasker;
     var $globalLoading;
@@ -13,17 +10,19 @@ function(z){
         $globalLoading = $('#globalLoading');
 
         var self = this;
+        tally.view.toolbar.init();
+        tally.view.billList.init();
+        tally.view.billForm.init();
+        tally.view.loginForm.init();
         //listen system ready
         z.message.on('systemReady', function(){
-            self.toolbar.init();
-            self.billList.init();
-            self.billForm.init();
-
-            tally.view.hideLoading();
             tally.view.hideMasker();    
-            z.message.notify('viewReady');
-
         });
+        tally.view.hideLoading();
+    }
+
+    this.registerCommend = function(commends){
+        z.dom.bindCommends(document.body, commends);
     }
 
     this.alert = function(msg){
@@ -90,7 +89,7 @@ function(z){
             z.message.notify(tally.view, 'dateChange', dateStr);
         });
 
-        z.dom.bindCommends($billListToolbar.get(0), {
+        tally.view.registerCommend({
             createBill: function(param, element, event){
                 //验证时间是否有效什么的
                 var dateStr = $dateInput.val();
@@ -169,6 +168,7 @@ function(z){
     var packageContext = this;
 
     var $billFormContainer,
+        $billForm,
         $billFormDate,
         $billFormCateIn,
         $billFormCateOut,
@@ -177,10 +177,13 @@ function(z){
         $billFormAmount
         ;
 
+    var cateListHasBuild = false;
+
     this.init = function(){
         $billFormContainer = $('#billFormContainer');
-        z.dom.render($billFormContainer.get(0), 'billFormTmpl', {});
+        z.dom.render($billFormContainer.get(0), 'billFormTmpl');
         
+        $billForm = $('#billForm');
         $billFormDate = $('#billFormDate');
         $billFormCateIn = $('#billFormCateIn');
         $billFormCateOut = $('#billFormCateOut');
@@ -188,18 +191,13 @@ function(z){
         $billFormCateType = $('#billFormCateType');
         $billFormAmount = $('#billFormAmount');
 
-        var cateList = tally.controller.getCategoryList();
-
-        z.dom.render($billFormCateIn.get(0), 'cateListTmpl', { list: cateList.getInCates() });
-        z.dom.render($billFormCateOut.get(0), 'cateListTmpl', { list: cateList.getOutCates() });
-
-        z.dom.bindCommends($billFormContainer.get(0), {
+        tally.view.registerCommend({
             cancelBillForm: function(param, element, event){
                 packageContext.hide();
             }
         });
 
-        $billFormContainer.submit(function(e){
+        $billForm.submit(function(e){
             e.preventDefault();
             var data = getFormData();
             tally.controller.addBill(data);
@@ -209,6 +207,12 @@ function(z){
     }
 
     this.show = function(){
+        if(!cateListHasBuild){
+            var cateList = tally.controller.getCategoryList();
+
+            z.dom.render($billFormCateIn.get(0), 'cateListTmpl', { list: cateList.getInCates() });
+            z.dom.render($billFormCateOut.get(0), 'cateListTmpl', { list: cateList.getOutCates() });
+        }
         $billFormContainer.addClass('show');
     }
 
@@ -243,4 +247,52 @@ function(z){
     }
     
 });
+
+;Z.$package('tally.view.loginForm', function(z){
+
+    var $loginFormContainer,
+        $loginForm,
+        $username,
+        $password,
+        $autoLoginNext
+        ;
+
+    this.init = function(){
+        $loginFormContainer = $('#loginFormContainer');
+        z.dom.render($loginFormContainer.get(0), 'loginFormTmpl');
+
+        $loginForm = $('#loginForm');
+        $username = $('#username');
+        $password = $('#password');
+        $autoLoginNext = $('#autoLoginNext');
+
+        $loginForm.submit(function(e){
+            e.preventDefault();
+            var data = getFormData();
+            tally.controller.login({ data: data });
+        });
+
+    }
+
+    this.show = function(){
+        $loginFormContainer.addClass('show');
+        $username.focus();
+    }
+
+    this.hide = function(){
+        $loginFormContainer.removeClass('show');
+    }
+
+
+    var getFormData = function(){
+        var data = {
+            username: $username.val(),
+            password: $password.val(),
+            autoLoginNext: $autoLoginNext.prop('checked') ? 1 : 0
+        };
+        return data;
+    }
+
+});
+
 

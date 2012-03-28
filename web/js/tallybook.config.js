@@ -2,13 +2,15 @@
 ;Z.$package('tally.config', function(z){
     /*
      * 错误码, 1xxx 的是前台错误
+     * 10XX: 账号相关错误
      * 2xxx 的是后台返回的错误
      */
+    this.ERROR_CODE = {
+        NOT_LOGIN: 1001,
+        AUTO_LOGIN_ERROR: 1002,
+        OFFLINE_LOGIN_ERROR: 1003
+    };
 
-    this.ERROR_NOT_LOGIN = 1001;
-
-    this.ERROR_NOT_LOGIN_WITH_ACCOUNT = 1002;
-    
     /**
      * ajax 服务请求的路径
      */
@@ -28,7 +30,9 @@
         
         GET_TAGS: 'get_tags.php',
 
-        GET_TAG_LIST: 'get_tag_list.php'
+        GET_TAG_LIST: 'get_tag_list.php',
+
+        LOGIN: 'login.php'
     };
     
     for(var i in this.AJAX_REQUIRE_URLS){

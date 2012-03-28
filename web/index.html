@@ -22,13 +22,39 @@
         </div>
     </div>
     <div id="globalMasker" class="global-masker"></div>
-    <div id="billFormContainer" class="bill-form-container">
+    <div id="billFormContainer" class="form-container bill-form-container ">
+    </div>
+    <div id="loginFormContainer" class="form-container login-form-container">
     </div>
     <div id="globalLoading" class="global-loading"></div>
 </div>
 
+<script id="loginFormTmpl" type="text/plain">
+        <form id="loginForm" class="form login-form" cmd="void" action="">
+            <div class="titlebar">Login</div>
+            <div class="body">
+                <div>
+                    <label for="username">Username</label>
+                    <input id="username" required placeholder="username" pattern="[a-zA-Z0-9]{4,}" value="atlas">
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input id="password" type="password" required placeholder="password" pattern="[\\w\\.]{6,}" value="asdf3.14">
+                </div>
+                <div class="login-meta">
+                    <span></span>
+                    <input id="autoLoginNext" type="checkbox" >
+                    <label for="autoLoginNext">auto login next time</label>
+                </div>
+            </div>
+            <div class="toolbar">
+                <input type="submit" value="Done" >
+            </div>
+        </form>
+</script>
+
 <script id="billFormTmpl" type="text/plain">
-    <form class="bill-form" cmd="void" action="">
+        <form id="billForm" class="form bill-form" cmd="void" action="">
             <div class="titlebar">New</div>
             <div class="body">
                 <div class="date">
