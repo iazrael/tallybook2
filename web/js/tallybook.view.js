@@ -275,6 +275,10 @@
     }
 
     this.show = function(){
+        var account = z.storage.get('account');
+        if(account && account.autoLogin){
+            $autoLoginNext.prop('checked', 1);
+        }
         $loginFormContainer.addClass('show');
         $username.focus();
     }

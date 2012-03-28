@@ -8,7 +8,10 @@
     this.ERROR_CODE = {
         NOT_LOGIN: 1001,
         AUTO_LOGIN_ERROR: 1002,
-        OFFLINE_LOGIN_ERROR: 1003
+        OFFLINE_LOGIN_ERROR: 1003,
+
+        USER_AUTO_LOGIN_FAILURE: 2102
+    
     };
 
     /**

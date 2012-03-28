@@ -23,7 +23,7 @@
             if(account.autoLogin){
                 z.storage.set('account', account);
             }
-            z.cookie.set('account', account, null, null, 1);
+            z.cookie.set('account', account);
             account.isLogin = true;
             packageContext.setUser(account);
             
@@ -34,14 +34,19 @@
         });
         z.message.on('loginFailure', function(response){
             tally.view.hideLoading();
-            tally.view.confirm('login fail, retry? ', function(result){
-                if(result){
-                    packageContext.login(loginCallback);
-                }else{  
-                    loginCallback && loginCallback(false);
-                    loginCallback = null;
-                }
-            });
+            if(response.errorCode === tally.config.ERROR_CODE.USER_AUTO_LOGIN_FAILURE){
+                tally.view.alert('auto login failure');
+                tally.view.loginForm.show();
+            }else{
+                tally.view.confirm('login fail, retry? ', function(result){
+                    if(result){
+                        packageContext.login(loginCallback);
+                    }else{  
+                        loginCallback && loginCallback(false);
+                        loginCallback = null;
+                    }
+                });
+            }
         });
     }
 

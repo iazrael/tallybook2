@@ -170,7 +170,7 @@ input, button, select{
     vertical-align: middle;
 }
 .bill-form .cate-new{
-
+    display: none;
 }
 .bill-form .checkbox{
     display: none;
