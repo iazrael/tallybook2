@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="iTally" default="clean" basedir="./">
+	
+	<description>Tally Book II</description>
+	
+	<property name="build" location="public"/>
+	<property name="temp" location="${build}/temp"/>
+	<property name="lib" location="lib"/>
+    
+	<property name="charset" value="utf-8"/>
+	<property name="zipname" value="build.zip"/>
+    
+	<property name="jsFileList" value="ztool.all.js, tallybook.all.js"/>
+	<property name="cssFileList" value="style.css"/>
+    
+    <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" classpath="lib/ant-contrib-1.0b3.jar" />
+    
+    <target name="init">
+    	<delete dir="${build}" />
+    	<mkdir dir="${build}" />
+    	<mkdir dir="${temp}" />
+    	<mkdir dir="${build}/js" />
+    	<mkdir dir="${build}/css" />
+    </target>
+    
+    <target name="concat" depends="init">
+        <concat destfile="${temp}/js/tallybook.all.js" encoding="${charset}" outputencoding="${charset}">
+            <path path="${basedir}/web/js/tallybook.js" />     
+            <path path="${basedir}/web/js/tallybook.account.js" />            
+            <path path="${basedir}/web/js/tallybook.config.js" />            
+            <path path="${basedir}/web/js/tallybook.controller.js" />            
+            <path path="${basedir}/web/js/tallybook.model.js" />            
+            <path path="${basedir}/web/js/tallybook.net.js" />            
+            <path path="${basedir}/web/js/tallybook.start.js" />            
+            <path path="${basedir}/web/js/tallybook.util.js" />            
+            <path path="${basedir}/web/js/tallybook.view.js" />            
+        </concat>
+    </target>
+    
+    <target name="copy" depends="concat">
+        <copy todir="${build}">
+            <fileset dir="${basedir}">
+                <include name="server/**" />
+            </fileset>
+        </copy>
+        <copy todir="${build}">
+            <fileset dir="${basedir}/web/">
+                <include name="index.html" />
+                <include name="offline.manifest" />
+                <include name="apple-touch-icon.png" />
+                <include name="images/*.png" />
+                <include name="images/*.gif" />
+            </fileset>
+        </copy>
+        <copy todir="${temp}">
+            <fileset dir="${basedir}/web">
+                <include name="js/ztool.all.js" />
+                <include name="css/*.css" />
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="compress-js-task">
+        <echo message="compressing ${fileName}" />
+        <java jar="${lib}/compiler.jar" fork="true">
+			<arg line="--charset ${charset} --js='${temp}/js/${fileName}' --js_output_file='${build}/js/${fileName}'" />
+		</java>
+    </target>
+    
+    <target name="compress-css-task">
+        <echo message="compressing ${fileName}" />
+        <java jar="${lib}/yuicompressor-2.4.6.jar" fork="true">
+			<arg line="--type css --charset ${charset} '${temp}/css/${fileName}' -o '${build}/css/${fileName}'" />
+		</java>
+    </target>
+    
+    <target name="compress" depends="copy">
+        <echo message="compressing js..." />
+        <foreach target="compress-js-task" list="${jsFileList}" delimiter="," param="fileName" trim="true"></foreach>
+        <echo message="compress js finish"/>
+        
+        <echo message="compressing css..." />
+        <foreach target="compress-css-task" list="${cssFileList}" delimiter="," param="fileName" trim="true"></foreach>
+        <echo message="compress css finish"/>
+    </target>
+    
+    <target name="zip" depends="compress">
+        <delete dir="${temp}" />
+        <zip destfile="${build}/${zipname}" basedir="${build}"/>
+    </target>
+    
+    <target name="clean" depends="zip">
+        
+	</target>
+</project>

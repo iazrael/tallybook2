@@ -166,7 +166,7 @@
             if(this._parents && this._lastModifyTime === this.getModify()){
                 return this._parents;
             }else{
-                this._lastModifyTime === this.getModify();
+                this._lastModifyTime = this.getModify();
                 return this._parents = this.filter('parentId', 0);
             }
         },
@@ -174,7 +174,7 @@
             if(this._inCates && this._lastModifyTime === this.getModify()){
                 return this._inCates;
             }else{
-                this._lastModifyTime === this.getModify();
+                this._lastModifyTime = this.getModify();
                 return this._inCates = z.array.filter(this.getParents(), 'type', 1);
             }
         },
@@ -182,7 +182,7 @@
             if(this._outCates && this._lastModifyTime === this.getModify()){
                 return this._outCates;
             }else{
-                this._lastModifyTime === this.getModify();
+                this._lastModifyTime = this.getModify();
                 return this._outCates = z.array.filter(this.getParents(), 'type', 0);
             }
         }
