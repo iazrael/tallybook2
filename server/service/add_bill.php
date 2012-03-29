@@ -8,6 +8,7 @@
 	$json = new Services_JSON();
 	$result = array();
 
+	
 	$uid = $_SESSION['uid'];
 	
 	$occurredTime = escape_string($_POST['occurredTime']);

@@ -2,7 +2,7 @@
 	require_once('../tbdb.php');
 	require_once('../JSON.php');
 	require_once('../common.php');
-	
+
 	$json = new Services_JSON();
 	$result = array();
 	$list = array();
@@ -30,7 +30,7 @@
       			$result[success] = 1;
 				$result[result]['username'] = $username;
 				$result[result]['token'] = $token;
-				$result[result]['autoLogin'] = $autoLogin;
+				$result[result]['autoLogin'] = $autoLogin + 0;
 
 	      		print($json->encode($result));
       		}else{
@@ -39,7 +39,7 @@
 				$result[errorMsg] = 'user auto login failure';
 
 				$result[result]['param']['username'] = $username;
-				$result[result]['param']['autoLogin'] = $autoLogin;
+				$result[result]['param']['autoLogin'] = $autoLogin + 0;
 				$result[result]['param']['token'] = $token;
 
 				print($json->encode($result));
@@ -50,7 +50,7 @@
 			$result[errorMsg] = 'user auto login failure';
 
 			$result[result]['param']['username'] = $username;
-			$result[result]['param']['autoLogin'] = $autoLogin;
+			$result[result]['param']['autoLogin'] = $autoLogin + 0;
 			$result[result]['param']['token'] = $token;
 
 			print($json->encode($result));
@@ -67,13 +67,13 @@
       		$queryString = "UPDATE user SET lastLoginTime=now(), lastLoginIp='$ip', token='$token' WHERE uname='$username'";
       		if($tbdb->update($queryString)){
 
-      			$_SESSION['uid'] = $user[id];
+      			$_SESSION['uid'] = $user[uid];
       			$_SESSION['username'] = $username;
 
       			$result[success] = 1;
 				$result[result]['username'] = $username;
 				$result[result]['token'] = $token;
-				$result[result]['autoLogin'] = $autoLoginNext;
+				$result[result]['autoLogin'] = $autoLoginNext + 0;
 
 	      		print($json->encode($result));
       		}else{
@@ -101,7 +101,7 @@
 		$result[errorMsg] = 'data format error';
 		if($autoLogin == 1){
 			$result[result]['param']['username'] = $username;
-			$result[result]['param']['autoLogin'] = $autoLogin;
+			$result[result]['param']['autoLogin'] = $autoLogin + 0;
 			$result[result]['param']['token'] = $token;
 		}else{
 			$result[result]['param']['username'] = $username;

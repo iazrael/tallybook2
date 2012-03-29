@@ -8,8 +8,8 @@
 	$result = array();
 	$list = array();
 	$parents = array();
-
-	$uid = $_SESSION['uid'];
+	
+	$uid = $_SESSION['uid'];	
 
 
 	$queryString = "SELECT * FROM category c WHERE uid='$uid' ORDER BY type, parentId, c.index DESC";

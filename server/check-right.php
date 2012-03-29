@@ -3,7 +3,6 @@ require_once('JSON.php');
 require_once('common.php');
 
 if($_IS_NEED_LOGIN){
-	
 	$uid = $_SESSION['uid'];
 	
 	if(!isset($uid)){

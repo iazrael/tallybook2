@@ -7,7 +7,7 @@
 	
 	$json = new Services_JSON();
 	$result = array();
-
+	
 	$uid = $_SESSION['uid'];
 	
 	$date = escape_string($_GET['date']);
