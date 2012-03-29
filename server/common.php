@@ -16,7 +16,7 @@
 	$_NO_AUTHORIZATION = 503;
 
 	//配置
-	$_IS_NEED_LOGIN = false;
+	$_IS_NEED_LOGIN = true;
 	$_IS_RECORD_DELETABLE = true;
 ?>
 

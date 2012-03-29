@@ -8,7 +8,6 @@
 	$result = array();
 	$list = array();
 
-	$_SESSION['uid'] = 1;
 	$uid = $_SESSION['uid'];
 
 	$queryString = "SELECT id, name FROM tag WHERE uid='$uid'";

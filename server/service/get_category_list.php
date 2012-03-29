@@ -9,7 +9,6 @@
 	$list = array();
 	$parents = array();
 
-	$_SESSION['uid'] = 1;
 	$uid = $_SESSION['uid'];
 
 

@@ -8,7 +8,6 @@
 	$json = new Services_JSON();
 	$result = array();
 
-	$_SESSION['uid'] = 1;
 	$uid = $_SESSION['uid'];
 	
 	$date = escape_string($_GET['date']);
