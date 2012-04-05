@@ -17,7 +17,7 @@
     /**
      * ajax 服务请求的路径
      */
-    var SERVICE_ROOT = '../server/service/';
+    var SERVICE_ROOT = './service/';
     this.AJAX_REQUIRE_URLS = {
         GET_BILL: 'get_bill.php',
         ADD_BILL: 'add_bill.php',

@@ -21,7 +21,7 @@
                 autoLogin: result.autoLogin
             };
             if(account.autoLogin){
-                z.storage.set('account', account);
+                z.storage.local.set('account', account);
             }
             z.cookie.set('account', account);
             account.isLogin = true;
@@ -69,7 +69,7 @@
     }
 
     this.login = function(callback){
-        var account = z.storage.get('account');
+        var account = z.storage.local.get('account');
         if(this.isLogin()){
             callback(true);
         }else if(this.isOffline()){
@@ -100,17 +100,17 @@
             }
         }else{
             //又没离线, 就验证登录吧
-            var cookieAcc = z.cookie.get('account');
-            if(cookieAcc && cookieAcc.username && cookieAcc.token){
-                //如果 cookie 中还有 username 和 token,说明上次登录还有效
+            var lastAccount = z.cookie.get('account');
+            if(lastAccount && lastAccount.username && lastAccount.token){
+                //如果 seesion 中还有 username 和 token,说明上次登录还有效
                 packageContext.setUser({
                     isLogin: true,
-                    username: cookieAcc.username,
-                    token: cookieAcc.token
+                    username: lastAccount.username,
+                    token: lastAccount.token
                 });
                 callback(true);
             }else if(account && account.autoLogin && account.token){
-                //cookie 中没有token, 且上一次登录中, 选择了自动登录
+                //seesion 中没有token, 且上一次登录中, 选择了自动登录
                 loginCallback = callback;
                 var data = {
                     username: account.username,

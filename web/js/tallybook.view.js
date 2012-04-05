@@ -275,7 +275,7 @@
     }
 
     this.show = function(){
-        var account = z.storage.get('account');
+        var account = z.storage.local.get('account');
         if(account && account.autoLogin){
             $autoLoginNext.prop('checked', 1);
         }

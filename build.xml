@@ -10,7 +10,8 @@
 	<property name="charset" value="utf-8"/>
 	<property name="zipname" value="build.zip"/>
     
-	<property name="jsFileList" value="ztool.all.js, tallybook.all.js"/>
+    <property name="translateFileList" value="index.html offline.manifest"/>
+	<property name="jsFileList" value="ztool.all.js tallybook.all.js"/>
 	<property name="cssFileList" value="style.css"/>
     
     <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" classpath="lib/ant-contrib-1.0b3.jar" />
@@ -22,8 +23,36 @@
     	<mkdir dir="${build}/js" />
     	<mkdir dir="${build}/css" />
     </target>
-    
-    <target name="concat" depends="init">
+    <!-- 对 index.html and manifest 预处理 -->
+    <target name="translate" depends="init">
+        <exec executable="node">
+            <arg line="build.js ${basedir}/web/ ${build}/ ${translateFileList}"/>
+        </exec>
+    </target>
+
+    <target name="concat" depends="translate">
+        <concat destfile="${basedir}/web/js/ztool.all.js" encoding="${charset}" outputencoding="${charset}">
+            <path path="${basedir}/zTool/z.core.js" />
+            <path path="${basedir}/zTool/z.base.js" />
+            <path path="${basedir}/zTool/z.class.js" />
+            <path path="${basedir}/zTool/z.message.js" />
+            
+            <path path="${basedir}/zTool/z.array.js" />
+            <path path="${basedir}/zTool/z.cookie.js" />
+            <path path="${basedir}/zTool/z.date.js" />
+            <path path="${basedir}/zTool/z.dom.js" />
+            <path path="${basedir}/zTool/z.number.js" />
+            <path path="${basedir}/zTool/z.string.js" />
+            <path path="${basedir}/zTool/z.storage.js" />
+
+            <path path="${basedir}/zTool/z.ui.ScrollAction.js" />
+
+            <path path="${basedir}/zTool/z.util.Beater.js" />            
+            <path path="${basedir}/zTool/z.util.Collection.js" />            
+            <path path="${basedir}/zTool/z.util.DependentQueue.js" />            
+
+            <path path="${basedir}/zTool/z.util.delay.js" />            
+        </concat>
         <concat destfile="${temp}/js/tallybook.all.js" encoding="${charset}" outputencoding="${charset}">
             <path path="${basedir}/web/js/tallybook.js" />     
             <path path="${basedir}/web/js/tallybook.account.js" />            
@@ -45,8 +74,6 @@
         </copy>
         <copy todir="${build}">
             <fileset dir="${basedir}/web/">
-                <include name="index.html" />
-                <include name="offline.manifest" />
                 <include name="apple-touch-icon.png" />
                 <include name="images/*.png" />
                 <include name="images/*.gif" />
@@ -75,13 +102,9 @@
     </target>
     
     <target name="compress" depends="copy">
-        <echo message="compressing js..." />
-        <foreach target="compress-js-task" list="${jsFileList}" delimiter="," param="fileName" trim="true"></foreach>
-        <echo message="compress js finish"/>
+        <foreach target="compress-js-task" list="${jsFileList}" delimiter=" " param="fileName" trim="true"></foreach>
         
-        <echo message="compressing css..." />
-        <foreach target="compress-css-task" list="${cssFileList}" delimiter="," param="fileName" trim="true"></foreach>
-        <echo message="compress css finish"/>
+        <foreach target="compress-css-task" list="${cssFileList}" delimiter=" " param="fileName" trim="true"></foreach>
     </target>
     
     <target name="zip" depends="compress">
