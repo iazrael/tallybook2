@@ -77,8 +77,8 @@
     var initEvents = function(){
 
         z.message.on('systemReady', function(){
-            // tally.view.toolbar.setDate(tally.util.getDate());
-            tally.view.jumpToDate('2012-03-18');
+            tally.view.toolbar.setDate(tally.util.getDate());
+            // tally.view.jumpToDate('2012-03-18');
         });
 
         z.message.on(tally.view, 'dateChange', function(dateStr){

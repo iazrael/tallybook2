@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="offline.manifest">
+<html manifest="%manifest%">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no;" />
@@ -71,10 +71,10 @@
                     </span>
                 </div>
                 <div class="money">
-                    <span class="sign">￥</span><input id="billFormAmount" type="number" placeholder="0.00" min="0" required/>
+                    <span class="sign">￥</span><input id="billFormAmount" placeholder="0.00" min="0" required pattern="\\d+(\\.\\d+)?"/>
                 </div>
                 <div class="tags"><span class="label">Tags</span><input /></div>
-                <div class="remark"><span class="label">Desc</span><textarea id="billFormRemark" placeholder="some words" ></textarea></div>
+                <div class="remark"><span class="label">Desc</span><input id="billFormRemark" placeholder="some words" ></div>
             </div>
             <div class="toolbar">
                 <input type="button" value="Cancel" cmd="cancelBillForm"><input type="submit" value="Done" >

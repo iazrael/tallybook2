@@ -18,21 +18,18 @@
 	//配置
 	$_IS_NEED_LOGIN = true;
 	$_IS_RECORD_DELETABLE = true;
-?>
 
-<?php
 	//常用方法
 	function escape_string($str){
 		return mysql_real_escape_string(trim($str));
 	}
 	
-?>
 
-<?php
 	//一些初始化
 	error_reporting(E_ERROR | E_WARNING | E_PARSE);
+	session_start();
 	header('Content-Type: application/json; charset=UTF-8');
 	
-	session_start();
+	
 
 ?>

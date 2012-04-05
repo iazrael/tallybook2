@@ -22,9 +22,10 @@ file = file.toString().replace(/<script\s+output="([^"]+)"\s+src="([^"]+)".*?<\/
 		return '';
 	}else{
 		matchList[o] = 1;
-		return '<script src="js/ztool.all.js"></script>';
+		return '<script src="' + o + '"></script>';
 	}
 });
+file = file.replace('%manifest%', 'offline.manifest');
 fs.writeFileSync(target + html, file);
 console.log('done');
 

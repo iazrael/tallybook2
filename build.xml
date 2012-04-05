@@ -31,7 +31,7 @@
     </target>
 
     <target name="concat" depends="translate">
-        <concat destfile="${basedir}/web/js/ztool.all.js" encoding="${charset}" outputencoding="${charset}">
+        <concat destfile="${temp}/js/ztool.all.js" encoding="${charset}" outputencoding="${charset}">
             <path path="${basedir}/zTool/z.core.js" />
             <path path="${basedir}/zTool/z.base.js" />
             <path path="${basedir}/zTool/z.class.js" />
@@ -70,18 +70,18 @@
         <copy todir="${build}">
             <fileset dir="${basedir}">
                 <include name="server/**" />
+                <exclude name="**/db-config.php" />
             </fileset>
         </copy>
         <copy todir="${build}">
             <fileset dir="${basedir}/web/">
-                <include name="apple-touch-icon.png" />
+                <include name="*.png" />
                 <include name="images/*.png" />
                 <include name="images/*.gif" />
             </fileset>
         </copy>
         <copy todir="${temp}">
             <fileset dir="${basedir}/web">
-                <include name="js/ztool.all.js" />
                 <include name="css/*.css" />
             </fileset>
         </copy>

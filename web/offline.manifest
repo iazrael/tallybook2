@@ -1,11 +1,11 @@
 CACHE MANIFEST
 CACHE:
-#index.html
-#css/style.css
-#images/itally.png
-#images/loading2.gif
-#js/ztool.all.js
-#js/tallybook.all.js
+index.html
+css/style.css
+images/itally.png
+images/loading2.gif
+js/ztool.all.js
+js/tallybook.all.js
 http://static.imatlas.com/jquery/jquery-1.6.4.js
 
 NETWORK:
