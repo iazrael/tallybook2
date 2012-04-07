@@ -18,12 +18,11 @@
             var account = {
                 token: result.token,
                 username: result.username,
-                autoLogin: result.autoLogin
+                autoLogin: result.autoLogin,
+                tagsLastModified: result.tagsLastModified,
+                catesLastModified: result.catesLastModified
             };
-            if(account.autoLogin){
-                z.storage.local.set('account', account);
-            }
-            z.cookie.set('account', account);
+            
             account.isLogin = true;
             packageContext.setUser(account);
             
@@ -53,6 +52,13 @@
     this.setUser = function(account){
         for(var i in account){
             loginUser[i] = account[i];
+        }
+        z.cookie.set('account', {
+            username: loginUser.username,
+            token: loginUser.token
+        });
+        if(loginUser.autoLogin){
+            z.storage.local.set('account', loginUser);
         }
     }
 
@@ -101,13 +107,12 @@
         }else{
             //又没离线, 就验证登录吧
             var lastAccount = z.cookie.get('account');
-            if(lastAccount && lastAccount.username && lastAccount.token){
+            if(lastAccount && lastAccount.username && lastAccount.token
+                && account && account.username === lastAccount.username && account.token === lastAccount.token
+                ){
                 //如果 seesion 中还有 username 和 token,说明上次登录还有效
-                packageContext.setUser({
-                    isLogin: true,
-                    username: lastAccount.username,
-                    token: lastAccount.token
-                });
+                account.isLogin = true;
+                packageContext.setUser(account);
                 callback(true);
             }else if(account && account.autoLogin && account.token){
                 //seesion 中没有token, 且上一次登录中, 选择了自动登录

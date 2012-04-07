@@ -24,9 +24,7 @@ input, button, select{
     overflow: hidden;
     height: 100%;
 
-    /* for test 
-    width: 320px;
-    border-right: 1px dotted #339;*/
+    min-width: 320px;
 }
 .container{
     overflow-x: hidden;
@@ -72,6 +70,7 @@ input, button, select{
 /******************* bill list ************************************/
 .bill-list{
     counter-reset: billcounter;
+    list-style: none;
 }
 .bill-item{
     margin: 5px 0;
@@ -80,6 +79,9 @@ input, button, select{
 .bill-item:before{
     content: counter(billcounter)".";
     counter-increment: billcounter;
+    display: inline-block;
+    width: 5%;
+    text-align: center;
 }
 .bill-item:nth-child(2n){
     background: #fceacb;
@@ -107,6 +109,7 @@ input, button, select{
 }
 .bill-item .tags, .bill-item .remark{
     display: block;
+    margin-left: 5%;
 }
 
 

@@ -13,6 +13,7 @@
     var cateList;
     var currentDate;
     var currentPage = 1;
+    var allBillLoaded = false;
     
     //**************************************************
     // 对外接口
@@ -30,6 +31,31 @@
         return cateList;
     }
 
+    this.addBill = function(data){
+        tally.view.showLoading();
+        var tags = tally.util.translateTags(data.tags);
+        delete data.tags;
+        if(tags){//有tag, 先添加tag, addBill的操作在添加成功后的回调执行
+            tally.net.addTags({
+                data: {tags: tags},
+                argument: {
+                    action: 'addBill',
+                    data: data
+                }
+                });
+        }else{
+            tally.net.addBill({
+                data: data
+            });
+        }
+        
+    }
+
+    this.addTags = function(data){
+        tally.net.addTags({
+            data: data
+        });
+    }
 
     /**
      * 清空 billList 跳转到指定日期的账单
@@ -40,16 +66,9 @@
         currentDate = dateStr;
         currentPage = 1;
         billList.clear();
+        allBillLoaded = false;
         tally.view.showLoading();
         loadBillList(dateStr);
-    }
-
-    this.addBill = function(data){
-        tally.view.showLoading();
-        tally.net.addBill({
-            data: data
-        });
-
     }
 
     this.handleError = function(errorCode){
@@ -86,6 +105,9 @@
         });
 
         z.message.on(tally.view, 'loadBills', function(){
+            if(allBillLoaded){
+                return;
+            }
             tally.view.showLoading();
             currentPage++;
             loadBillList(currentDate, currentPage);
@@ -104,9 +126,14 @@
 
         //listen net event to change model
         z.message.on('getBillListSuccess', function(response){
-            var list = parseBills(response.result.list);
-            billList.addRange(list);
             tally.view.hideLoading();
+            var result = response.result;
+            if(!result.list.length && billList.length() >= result.total){
+                allBillLoaded = true;
+            }else{
+                var list = parseBills(result.list);
+                billList.addRange(list);
+            }
         });
         z.message.on('getBillListFailure', function(response){
             tally.view.hideLoading();
@@ -133,22 +160,64 @@
         });
         z.message.on('addBillSuccess', function(response){
             tally.view.hideLoading();
-            tally.view.billForm.hide();
             var bill = parseBill(response.result.data);
             if(bill.occurredTime === currentDate){
                 billList.add(bill, 0);
-            }else{
-                tally.view.confirm('是否转到 ' + bill.occurredTime + ' 的账单记录?', function(result){
-                    if(result){
-                        tally.view.jumpToDate(bill.occurredTime);
-                    }
-                });
             }
+            tally.view.confirm('继续添加?', function(result){
+                if(result){
+                    tally.view.billForm.newBill();
+                }else{
+                    tally.view.billForm.hide();
+                    if(bill.occurredTime !== currentDate){
+                        tally.view.confirm('是否转到 ' + bill.occurredTime + ' 的账单记录?', function(result){
+                            if(result){
+                                tally.view.jumpToDate(bill.occurredTime);
+                            }
+                        });
+                    }
+                }
+            });
             
         });
         z.message.on('addBillFailure', function(response){
             tally.view.hideLoading();
             tally.view.alert('addBillFailure ' + response.errorCode);//TODO
+        });
+        z.message.on('addTagsSuccess', function(response){
+            
+            var result = response.result;
+            var list = parseTags(result.list);
+            tagList.addRange(list);
+
+            tally.account.setUser({
+                tagsLastModified: result.lastModified
+            });
+            if(response.argument.action === 'addBill'){
+                z.message.notify(packageContext, 'billTagsAdd', {result: list, argument: response.argument});
+            }
+            
+        });
+        z.message.on('addTagsFailure', function(response){
+            //添加tag失败, 之后导致添加bill失败
+            if(response.argument.action === 'addBill'){
+                z.message.notify('addBillFailure', response);
+            }else{
+                tally.view.alert('addTagsFailure ' + response.errorCode);
+            }
+            
+        });
+
+        z.message.on(packageContext, 'billTagsAdd', function(data){
+            var tags = [], list = data.result;
+            for(var i in list){
+                tags.push(list[i].id);
+            }
+            var billData = data.argument.data;
+            billData.tags = tags.join(',');
+            tally.net.addBill({
+                data: billData
+            });
         });
     }
 
@@ -166,7 +235,7 @@
                 });
             },
             onStop: function(queue, item){
-                tally.view.alert('加载失败! 请刷新重试!');
+                tally.view.alert('初始化出错, 请刷新重试!');
             },
             onFinish: function(){
                 z.message.notify('systemReady');
@@ -189,29 +258,55 @@
         depQueue.add({
             id: 'getTagList',
             exec: function(queue, item){
-                loadTagList(function(response){
-                    if(response.success){
-                        z.message.notify('getTagListSuccess', response);
-                        queue.next();
-                    }else{
-                        z.message.notify('getTagListFailure', response);
-                        queue.pause();
-                    }
-                });
+                var user = tally.account.getUser();
+                var userData = z.storage.local.get(user.username);
+                if(userData && userData.tagList && userData.tagList.result.lastModified === user.tagsLastModified){
+                    //缓存的数据还可用
+                    z.message.notify('getTagListSuccess', userData.tagList);
+                    queue.next();
+                }else{
+                    loadTagList(function(response){
+                        if(response.success){
+                            if(!userData){
+                                userData = {};
+                            }
+                            userData.tagList = response;
+                            z.storage.local.set(user.username, userData);
+                            z.message.notify('getTagListSuccess', response);
+                            queue.next();
+                        }else{
+                            // z.message.notify('getTagListFailure', response);
+                            queue.stop();
+                        }
+                    });
+                }
             }
         });
         depQueue.add({
             id: 'getCategoryList',
             exec: function(queue, item){
-                loadCategoryList(function(response){
-                    if(response.success){
-                        z.message.notify('getCategoryListSuccess', response);
-                        queue.next();
-                    }else{
-                        z.message.notify('getCategoryListFailure', response);
-                        queue.pause();
-                    }
-                });
+                var user = tally.account.getUser();
+                var userData = z.storage.local.get(user.username);
+                if(userData && userData.cateList && userData.cateList.result.lastModified === user.catesLastModified){
+                    //缓存的数据还可用
+                    z.message.notify('getCategoryListSuccess', userData.cateList);
+                    queue.next();
+                }else{
+                    loadCategoryList(function(response){
+                        if(response.success){
+                            if(!userData){
+                                userData = {};
+                            }
+                            userData.cateList = response;
+                            z.storage.local.set(user.username, userData);
+                            z.message.notify('getCategoryListSuccess', response);
+                            queue.next();
+                        }else{
+                            // z.message.notify('getCategoryListFailure', response);
+                            queue.stop();
+                        }
+                    });
+                }
             }
         });
         

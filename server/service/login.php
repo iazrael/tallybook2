@@ -21,16 +21,19 @@
 		$queryString = "SELECT * FROM user WHERE uname='$username' AND token='$token'";# AND lastLoginIp='$ip'";
 		$user = $tbdb->getfirst($queryString);
       	if($user){
-      		$queryString = "UPDATE user SET lastLoginTime=now() WHERE uname='$username'";
+      		$queryString = "UPDATE user SET lastLoginTime=now(), lastLoginIp='$ip' WHERE uname='$username'";
       		if($tbdb->update($queryString)){
 
-      			$_SESSION['uid'] = $user[id];
+      			$_SESSION['uid'] = $user[uid];
       			$_SESSION['username'] = $username;
 
       			$result[success] = 1;
 				$result[result]['username'] = $username;
 				$result[result]['token'] = $token;
 				$result[result]['autoLogin'] = $autoLogin + 0;
+
+				$result[result]['tagsLastModified'] = $user[tagsChangeTime];
+				$result[result]['catesLastModified'] = $user[catesChangeTime];
 
 	      		print($json->encode($result));
       		}else{
@@ -74,6 +77,9 @@
 				$result[result]['username'] = $username;
 				$result[result]['token'] = $token;
 				$result[result]['autoLogin'] = $autoLoginNext + 0;
+
+				$result[result]['tagsLastModified'] = $user[tagsChangeTime];
+				$result[result]['catesLastModified'] = $user[catesChangeTime];
 
 	      		print($json->encode($result));
       		}else{

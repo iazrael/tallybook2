@@ -174,10 +174,12 @@
         $billFormCateOut,
         $billFormRemark,
         $billFormCateType,
+        $billFormTag,
         $billFormAmount
         ;
 
     var cateListHasBuild = false;
+    var isLock = false;
 
     this.init = function(){
         $billFormContainer = $('#billFormContainer');
@@ -190,6 +192,7 @@
         $billFormRemark = $('#billFormRemark');
         $billFormCateType = $('#billFormCateType');
         $billFormAmount = $('#billFormAmount');
+        $billFormTag = $('#billFormTag');
 
         tally.view.registerCommend({
             cancelBillForm: function(param, element, event){
@@ -199,20 +202,34 @@
 
         $billForm.submit(function(e){
             e.preventDefault();
+            if(packageContext.isLock()){
+                return;
+            }
+            // packageContext.lock(true);
             var data = getFormData();
             tally.controller.addBill(data);
         });
-
+        //
         $billFormContainer.show();
+    }
+
+    this.isLock = function(){
+        return isLock;
+    }
+
+    this.lock = function(status){
+        isLock = status;
     }
 
     this.show = function(){
         if(!cateListHasBuild){
+            cateListHasBuild = true;
             var cateList = tally.controller.getCategoryList();
 
             z.dom.render($billFormCateIn.get(0), 'cateListTmpl', { list: cateList.getInCates() });
             z.dom.render($billFormCateOut.get(0), 'cateListTmpl', { list: cateList.getOutCates() });
         }
+        
         $billFormContainer.addClass('show');
     }
 
@@ -221,8 +238,14 @@
     }
 
     this.newBill = function(data){
-        $billFormDate.val(data.occurredTime);
+        packageContext.lock(false);
+        if(data && data.occurredTime){
+            $billFormDate.val(data.occurredTime);
+        }
+        $billFormRemark.val('');
+        $billFormAmount.val('');
         this.show();
+        z.util.delay('billFormAutoFocus', 500, function(){ $billFormAmount.focus(); });
     }
 
     //=========
@@ -232,6 +255,7 @@
         var data = {
             occurredTime: $billFormDate.val(),
             amount: $billFormAmount.val(),
+            tags: $billFormTag.val(),
             remark: $billFormRemark.val()
         };
         if($billFormCateType.prop('checked')){

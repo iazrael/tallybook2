@@ -30,9 +30,12 @@
 			$list[] = $item;
 		}
 	}
-	
+	$queryString = "SELECT catesChangeTime FROM user WHERE uid='$uid'";
+	$qresult = $tbdb->getfirst($queryString);
+
 	$result[success] = 1;
 	$result[result]['list'] = $list;
+	$result[result]['lastModified'] = $qresult[catesChangeTime];
 	print($json->encode($result));
 	// print($json->encode($parents));
 

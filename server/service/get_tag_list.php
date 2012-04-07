@@ -18,9 +18,12 @@
 				name=>$row[name]
 			);
 	}
+	$queryString = "SELECT tagsChangeTime FROM user WHERE uid='$uid'";
+	$qresult = $tbdb->getfirst($queryString);
 
 	$result[success] = 1;
 	$result[result]['list'] = $list;
+	$result[result]['lastModified'] = $qresult[tagsChangeTime];
 	print($json->encode($result));
 
 

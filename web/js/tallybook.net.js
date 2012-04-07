@@ -88,7 +88,10 @@
         require(REQUIRE_URLS.ADD_CATEGORY, option);
     }
     
-
+    this.addTags = function(option){
+        option.method = 'post';
+        require(REQUIRE_URLS.ADD_TAGS, option);
+    }
 
     //========= 账号 =======================
     
