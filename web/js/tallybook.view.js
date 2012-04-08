@@ -237,13 +237,18 @@
         $billFormContainer.removeClass('show');
     }
 
+    this.reset = function(){
+        this.lock(false);
+        $billFormRemark.val('');
+        $billFormAmount.val('');
+        $billFormTag.val('');
+    }
+
     this.newBill = function(data){
-        packageContext.lock(false);
+        this.reset();
         if(data && data.occurredTime){
             $billFormDate.val(data.occurredTime);
         }
-        $billFormRemark.val('');
-        $billFormAmount.val('');
         this.show();
         z.util.delay('billFormAutoFocus', 500, function(){ $billFormAmount.focus(); });
     }

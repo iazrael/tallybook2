@@ -1,4 +1,6 @@
-TallyBook HTML5 Version (iTally) 
+##iTally
+
+TallyBook HTML5 Version
 
 Version: 1.0 Base
 
