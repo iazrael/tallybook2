@@ -76,6 +76,7 @@
         <copy todir="${build}">
             <fileset dir="${basedir}/web/">
                 <include name="*.png" />
+                <include name="*.ico" />
                 <include name="images/*.png" />
                 <include name="images/*.gif" />
             </fileset>
