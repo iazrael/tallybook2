@@ -38,7 +38,8 @@ input, button, select{
     float: right;
     width: 51px;
     height: 31px;
-    background:  url(../images/itally.png) center center;
+    background:  url(../images/itally.png) center center no-repeat;
+    background-size: contain;
     text-indent: -9999em;
 }
 .global-masker{

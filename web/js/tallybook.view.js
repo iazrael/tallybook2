@@ -81,13 +81,7 @@
 
         $dateInput = $('#dateInput');
 
-        $dateInput.change(function(e){
-            var dateStr = $dateInput.val();
-            if(!checkeDate(dateStr)){
-                return;
-            }
-            z.message.notify(tally.view, 'dateChange', dateStr);
-        });
+        $dateInput.change(onDateChange);
 
         tally.view.registerCommend({
             createBill: function(param, element, event){
@@ -102,6 +96,14 @@
                 tally.view.billForm.newBill(data);
             }
         });
+    }
+
+    var onDateChange = function(e){
+        var dateStr = $dateInput.val();
+        if(!checkeDate(dateStr)){
+            return;
+        }
+        z.message.notify(tally.view, 'dateChange', dateStr);
     }
 
     var checkeDate = function(dateStr){
