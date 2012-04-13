@@ -138,13 +138,6 @@
     }, {
         init: function(option){
             
-        },
-        //把get改成根据key取数据的方式
-        get: function(key){
-            return this.getByKey(key);
-        },
-        remove: function(key){
-            return this.removeByKey(key);
         }
     });
 
