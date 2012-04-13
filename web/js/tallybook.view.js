@@ -71,6 +71,8 @@
     var $dateInput;
     var $billListToolbar;
 
+    var ONE_DAY = 1 * 24 * 3600 * 1000;
+
     this.setDate = function(dateStr){
         $dateInput.val(dateStr);
         z.message.notify(tally.view, 'dateChange', dateStr);
@@ -94,7 +96,17 @@
                     occurredTime: dateStr
                 };
                 tally.view.billForm.newBill(data);
+            },
+            prevDate: function(param, element, event){
+                changeDate(-1);
+            },
+            nextDate: function(param, element, event){
+                changeDate(1);
+            },
+            confirmDate: function(param, element, event){
+                $dateInput.change();
             }
+
         });
     }
 
@@ -115,6 +127,15 @@
             return false;
         }
         return true;
+    }
+
+    var changeDate = function(dayNum){
+        var dateStr = $dateInput.val();
+        var date = new Date(dateStr);
+        dateStr = date.getTime() + dayNum * ONE_DAY;
+        dateStr = z.date.format(new Date(dateStr), tally.config.DATE_FORMAT);
+        $dateInput.val(dateStr);
+        $dateInput.change();
     }
 
 });

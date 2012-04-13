@@ -68,6 +68,21 @@ input, button, select{
     left: 50%;
     margin: -8px 0 0 -8px;
 }
+
+/******************* toolbar ************************************/
+.toolbar .date-confirm{
+    display: none;
+}
+
+@media (max-device-width: 480px){
+    .toolbar .date-nav{
+        display: none;
+    }
+    .toolbar .date-confirm{
+        display: inline-block;
+    }
+}
+
 /******************* bill list ************************************/
 .bill-list{
     counter-reset: billcounter;
@@ -256,5 +271,6 @@ input, button, select{
     text-align: left;
 }
 
+/************ phone *********/
 
 
