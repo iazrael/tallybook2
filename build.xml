@@ -32,26 +32,26 @@
 
     <target name="concat" depends="translate">
         <concat destfile="${temp}/js/ztool.all.js" encoding="${charset}" outputencoding="${charset}">
-            <path path="${basedir}/zTool/z.core.js" />
-            <path path="${basedir}/zTool/z.base.js" />
-            <path path="${basedir}/zTool/z.class.js" />
-            <path path="${basedir}/zTool/z.message.js" />
+            <path path="${basedir}/zTool/src/z.core.js" />
+            <path path="${basedir}/zTool/src/z.base.js" />
+            <path path="${basedir}/zTool/src/z.class.js" />
+            <path path="${basedir}/zTool/src/z.message.js" />
             
-            <path path="${basedir}/zTool/z.array.js" />
-            <path path="${basedir}/zTool/z.cookie.js" />
-            <path path="${basedir}/zTool/z.date.js" />
-            <path path="${basedir}/zTool/z.dom.js" />
-            <path path="${basedir}/zTool/z.number.js" />
-            <path path="${basedir}/zTool/z.string.js" />
-            <path path="${basedir}/zTool/z.storage.js" />
+            <path path="${basedir}/zTool/src/z.array.js" />
+            <path path="${basedir}/zTool/src/z.cookie.js" />
+            <path path="${basedir}/zTool/src/z.date.js" />
+            <path path="${basedir}/zTool/src/z.dom.js" />
+            <path path="${basedir}/zTool/src/z.number.js" />
+            <path path="${basedir}/zTool/src/z.string.js" />
+            <path path="${basedir}/zTool/src/z.storage.js" />
 
-            <path path="${basedir}/zTool/z.ui.ScrollAction.js" />
+            <path path="${basedir}/zTool/src/z.ui.ScrollAction.js" />
 
-            <path path="${basedir}/zTool/z.util.Beater.js" />            
-            <path path="${basedir}/zTool/z.util.Collection.js" />            
-            <path path="${basedir}/zTool/z.util.DependentQueue.js" />            
+            <path path="${basedir}/zTool/src/z.util.Beater.js" />            
+            <path path="${basedir}/zTool/src/z.util.Collection.js" />            
+            <path path="${basedir}/zTool/src/z.util.DependentQueue.js" />            
 
-            <path path="${basedir}/zTool/z.util.delay.js" />            
+            <path path="${basedir}/zTool/src/z.util.delay.js" />            
         </concat>
         <concat destfile="${temp}/js/tallybook.all.js" encoding="${charset}" outputencoding="${charset}">
             <path path="${basedir}/web/js/tallybook.js" />     
@@ -75,7 +75,6 @@
         </copy>
         <copy todir="${build}">
             <fileset dir="${basedir}/web/">
-                <include name="*.png" />
                 <include name="*.ico" />
                 <include name="images/*.png" />
                 <include name="images/*.gif" />
